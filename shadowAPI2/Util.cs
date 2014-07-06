@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace shadowAPI2
 {
-    public class Misc
+    public class Util
     {
         public static String ColorToHexRGB(Color color)
         {

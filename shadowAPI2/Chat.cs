@@ -67,7 +67,7 @@ namespace shadowAPI2
             if (!Memory.isInit)
                 Memory.Init();
 
-            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Misc.ColorToHexRGB(color) + "}" + text }, true);
+            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(color) + "}" + text }, true);
         }
     }
 }
