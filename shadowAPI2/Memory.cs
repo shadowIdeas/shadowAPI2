@@ -1,0 +1,439 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace shadowAPI2
+{
+    public class Memory
+    {
+        /*
+        Enable Multiple SA Windows:
+        0x7468E0 : (func) CheckForOtherSA(void)
+        0x74872D : (asm) call CheckForOtherSA (NOP this in the exe)
+        */
+
+        // (c)shadowlif 2014 :>
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesRead);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesWritten);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
+        [DllImport("kernel32.dll")]
+        public static extern Int32 CloseHandle(IntPtr hObject);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, uint lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
+
+        public static bool isInit = false;
+
+        const int RESERVE = 25;
+
+        // GTA and more
+        private static uint pid = 0;
+        public static IntPtr handle = IntPtr.Zero;
+        private static uint sampModule = 0;
+        private static uint gtaModule = 0;
+
+        private static IntPtr allocMemory = IntPtr.Zero;
+        public static IntPtr[] parameterMemory = new IntPtr[RESERVE];
+        // Player
+        private static uint playerOffsetBase = 0xB6F5F0;
+
+        private static uint playerBase = 0;
+
+        // Health and armor
+        private static uint playerOffsetHealth = 0x540;
+        private static uint playerOffsetArmor = 0x548;
+
+        public static uint playerHealth = 0;
+        public static uint playerArmor = 0;
+
+        // Position
+        private static uint playerOffsetMatrix = 0x14;
+        private static uint playerOffsetPositionRotation = 0x14;
+        private static uint playerOffsetPositionX = 0x30;
+        private static uint playerOffsetPositionY = 0x34;
+        private static uint playerOffsetPositionZ = 0x38;
+
+        private static uint playerPosition = 0;
+        public static uint playerPositionRotation = 0;
+        public static uint playerPositionX = 0;
+        public static uint playerPositionY = 0;
+        public static uint playerPositionZ = 0;
+
+        // Location
+        private static uint playerOffsetLocation = 0x2F;
+        public static uint playerLocation = 0;
+
+        // Car
+        public static uint vehicleOffsetBase = 0xBA18FC;
+
+        public static uint vehicleOffsetId = 0x22; // TODO
+
+        public static uint vehicleOffsetDamage = 0x4C0;
+
+        public static uint vehicleOffsetSpeedX = 0x44;
+        public static uint vehicleOffsetSpeedY = 0x48;
+        public static uint vehicleOffsetSpeedZ = 0x4C;
+
+        public static uint vehicleOffsetCollideStatus = 0xD8;
+
+        // Stats
+        public static uint statisticFeetMeters = 0xB7938C;
+        public static uint statisticVehicleMeters = 0xB79390;
+        public static uint statisticBikeMeters = 0xB79394;
+        public static uint statisticHelicopterMeters = 0xB793A0;
+        public static uint statisticShipMeters = 0xB79398;
+        public static uint statisticSwimMeters = 0xB793E8;
+
+        // SAMP
+        // Chat
+        private static uint chatMessageOffset = 0x212A6C;
+        private static uint chatOffset = 0x212A94;
+        private static uint isChatOpenOffset = 0x55;
+
+        public static uint chatMessage = 0;
+        private static uint chat = 0;
+        public static uint isChatOpen = 0;
+
+        // Dialog
+        private static uint dialogOffset = 0x212A40;
+        private static uint isDialogOpenOffset = 0x28;
+
+        private static uint dialog = 0;
+        public static uint isDialogOpen = 0;
+
+        // Scoreboard
+        private static uint structSampOffset = 0x212A80;
+        private static uint structPlayersPoolOffset = 0x3D9;
+        private static uint structPlayersOffset = 0x14;
+        public static uint structRemotePlayersOffset = 0x2E;
+        public static uint remotePlayerStringLengthOffset = 0x24;
+        public static uint remotePlayerUsernameOffset = 0x14;
+
+        private static uint structSamp = 0;
+        private static uint structPlayersPool = 0;
+        public static uint structPlayers = 0;
+
+
+        // Functions
+
+        // SAMP
+
+        // Chat
+        private static uint functionSendSayOffset = 0x4CA0;
+        private static uint functionSendCommandOffset = 0x7BDD0;
+        private static uint functionAddChatMessageOffset = 0x7AA00;
+
+        public static uint functionSendSay = 0;
+        public static uint functionSendCommand = 0;
+        public static uint functionAddChatMessage = 0;
+
+        public static void Init()
+        {
+            if (!isInit)
+            {
+                Process[] processes = Process.GetProcessesByName("rgn_ac_gta");
+                if (processes.Length > 0)
+                {
+                    pid = (uint)processes[0].Id;
+                    ProcessModuleCollection modules = processes[0].Modules;
+                    foreach (ProcessModule item in modules)
+                    {
+                        if (item.ModuleName == "samp.dll")
+                        {
+                            sampModule = (uint)item.BaseAddress;
+                        }
+                        else if(item.ModuleName == "rgn_ac_gta.exe")
+                        {
+                            gtaModule = (uint)item.BaseAddress;
+                        }
+                    }
+                }
+                else
+                    return;
+
+                handle = OpenProcess(0x1F0FFF, 1, pid);
+
+                //// Allocate
+                allocMemory = VirtualAllocEx(handle, IntPtr.Zero, RESERVE*1024, 0x1000 | 0x2000, 0x40); // TODO Beim refresehen memory frei lassen
+                int x = Marshal.GetLastWin32Error();
+
+                for (int i = 0; i < parameterMemory.Length; i++)
+                {
+                    parameterMemory[i] = allocMemory + (1024 * i);
+                }
+
+
+                // Variables
+                #region Player
+                // Base of Player
+                playerBase = BitConverter.ToUInt32(ReadMemory(playerOffsetBase, 4), 0);
+
+                // HP
+                playerHealth = playerBase + playerOffsetHealth;
+                playerArmor = playerBase + playerOffsetArmor;
+
+                // Position
+                playerPosition = BitConverter.ToUInt32(ReadMemory(playerBase + playerOffsetMatrix, 4), 0);
+                playerPositionRotation = playerPosition + playerOffsetPositionRotation;
+                playerPositionX = playerPosition + playerOffsetPositionX;
+                playerPositionY = playerPosition + playerOffsetPositionY;
+                playerPositionZ = playerPosition + playerOffsetPositionZ;
+
+                // Interior Boolean
+                playerLocation = playerBase + playerOffsetLocation;
+                #endregion
+                #region Chat
+                // Chat
+                while ((chatMessage = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatMessageOffset, 4), 0)) == 0)
+                    System.Threading.Thread.Sleep(100);
+                while ((chat = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatOffset, 4), 0)) == 0)
+                    System.Threading.Thread.Sleep(100);
+                isChatOpen = chat + isChatOpenOffset;
+                #endregion
+                #region Dialog
+                // Dialog
+                dialog = BitConverter.ToUInt32(ReadMemory((uint)sampModule + dialogOffset, 4), 0);
+                isDialogOpen = dialog + isDialogOpenOffset;
+                #endregion
+                #region Player Infos
+                // Player Infos
+                structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
+                structPlayersPool = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
+                structPlayers = BitConverter.ToUInt32(ReadMemory(structPlayersPool + structPlayersOffset, 4), 0);
+                #endregion
+                #region World
+                #endregion
+
+                // Functions
+                #region Chat functions
+                functionSendSay = sampModule + functionSendSayOffset;
+                functionSendCommand = sampModule + functionSendCommandOffset;
+                functionAddChatMessage = sampModule + functionAddChatMessageOffset;
+                #endregion
+
+                ZoneManager.Init();
+
+                isInit = true;
+            }
+        }
+
+        public static void ReInit()
+        {
+            isInit = false;
+            CloseHandle(handle);
+            handle = IntPtr.Zero;
+            sampModule = 0;
+        }
+
+        public static bool ReadBoolean(uint address)
+        {
+            byte[] bytes = ReadMemory(address, 1);
+
+            bool result = BitConverter.ToBoolean(bytes, 0);
+
+            return result;
+        }
+
+        public static string ReadString(uint address, uint length)
+        {
+            byte[] bytes = ReadMemory(address, length);
+
+            string result = Encoding.ASCII.GetString(bytes);
+            return result;
+        }
+
+        public static int ReadInteger(uint address)
+        {
+            byte[] bytes = ReadMemory(address, 4);
+
+            int result = BitConverter.ToInt32(bytes, 0);
+
+            return result;
+        }
+
+        public static float ReadFloat(uint address)
+        {
+            byte[] bytes = ReadMemory(address, 4);
+
+            float result = BitConverter.ToSingle(bytes, 0);
+
+            return result;
+        }
+
+        public static byte[] ReadMemory(uint address, uint size)
+        {
+            byte[] bytes = new byte[size];
+            uint bytesReaded = 0;
+            ReadProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesReaded);
+
+            if (bytesReaded == 0)
+            {
+                int debug = Marshal.GetLastWin32Error();
+                if (debug == 6)
+                {
+                    ReInit();
+                    Init();
+                    return bytes;
+                }
+                else if (debug == 299)
+                {
+                    CloseHandle(handle);
+                    handle = OpenProcess(0x1F0FFF, 1, pid);
+
+                    playerBase = BitConverter.ToUInt32(ReadMemory(playerOffsetBase, 4), 0);
+
+                    playerHealth = playerBase + playerOffsetHealth;
+                    playerArmor = playerBase + playerOffsetArmor;
+
+                    playerPosition = BitConverter.ToUInt32(ReadMemory(playerBase + playerOffsetMatrix, 4), 0);
+                    playerPositionRotation = playerPosition + playerOffsetPositionRotation;
+                    playerPositionX = playerPosition + playerOffsetPositionX;
+                    playerPositionY = playerPosition + playerOffsetPositionY;
+                    playerPositionZ = playerPosition + playerOffsetPositionZ;
+
+                    playerLocation = playerBase + playerOffsetLocation;
+
+                    while ((chat = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatOffset, 4), 0)) == 0)
+                        System.Threading.Thread.Sleep(100);
+                    isChatOpen = chat + isChatOpenOffset;
+
+                    dialog = BitConverter.ToUInt32(ReadMemory((uint)sampModule + dialogOffset, 4), 0);
+                    isDialogOpen = dialog + isDialogOpenOffset;
+
+                    structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
+                    structPlayersPool = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
+                    structPlayers = BitConverter.ToUInt32(ReadMemory(structPlayersPool + structPlayersOffset, 4), 0);
+
+                    ReadProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesReaded);
+                }
+            }
+
+            return bytes;
+        }
+
+        public static void WriteBoolean(uint address, bool boolean)
+        {
+            if (boolean)
+                WriteMemory(address, new byte[] { 0 }, 1);
+            else
+                WriteMemory(address, new byte[] { 1 }, 1);
+
+        }
+
+        public static void WriteByte(uint address, byte value)
+        {
+            WriteMemory(address, new byte[] { value }, 1);
+        }
+
+        public static bool WriteMemory(uint address, byte[] bytes, uint size)
+        {
+            uint bytesWritten = 0;
+             if (WriteProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesWritten))
+                return true;
+            int x = Marshal.GetLastWin32Error();
+            return false;
+        }
+
+        public static bool WriteString(uint address, string text)
+        {
+            byte[] bytes = Encoding.Default.GetBytes(text);
+
+            return WriteMemory(address, bytes, (uint)512);
+        }
+
+        public static bool WriteFloat(uint address, float dec)
+        {
+            byte[] bytes = BitConverter.GetBytes(dec);
+
+            return WriteMemory(address, bytes, (uint)512);
+        }
+
+        public static void Call(uint address, object[] parameter, bool stackClear)
+        {
+            List<byte> data = new List<byte>(); // Liste um einfacher alles einzufügen
+
+            int usedParameters = 0;
+            for (int i = parameter.Length-1; i >= 0; i--)
+            {
+                IntPtr memoryAddress = IntPtr.Zero;
+                Type type = parameter[i].GetType();
+                if (type == typeof(string) && usedParameters <= parameterMemory.Length - 1)
+                {
+                    memoryAddress = parameterMemory[usedParameters];
+                    if (!WriteString((uint)memoryAddress, (string)parameter[i]))
+                        return;
+                    usedParameters++;
+                }
+                else if (type == typeof(uint))
+                {
+                    memoryAddress = new IntPtr(Convert.ToUInt32(parameter[i]));
+                }
+                else if (type == typeof(int))
+                {
+                    memoryAddress = new IntPtr(Convert.ToInt32(parameter[i]));
+                }
+                else if (type == typeof(Single) && usedParameters <= parameterMemory.Length - 1)
+                {
+                    memoryAddress = parameterMemory[usedParameters];
+                    if (!WriteFloat((uint)memoryAddress, (float)parameter[i]))
+                        return;
+                    usedParameters++;
+                }
+                else
+                    return;
+
+                data.Add(0x68); // Push ...
+                data.AddRange(BitConverter.GetBytes((uint)memoryAddress)); // parameter
+            }
+
+            data.Add(0xE8); // Call ...
+            int offset = (int)address - ((int)parameterMemory[parameterMemory.Length-1] + (parameter.Length * 5 + 5));
+            data.AddRange(BitConverter.GetBytes(offset)); // functionCommand
+
+            if(stackClear)
+            {
+                data.AddRange(new byte[] {0x83, 0xC4});
+                data.Add(Convert.ToByte(parameter.Length * 4));
+            }
+            data.Add(0xC3); // Return
+
+            if (!WriteMemory((uint)parameterMemory[parameterMemory.Length - 1], data.ToArray(), (uint)data.Count))
+                return;
+
+            IntPtr thread = CreateRemoteThread(handle, IntPtr.Zero, 0, (uint)parameterMemory[parameterMemory.Length-1], IntPtr.Zero, 0, IntPtr.Zero);
+            WaitForSingleObject(thread, 0xFFFFFFFF); // Verursacht ruckler? Teste es bei dir :) | Benötigt!
+
+            #region test
+            /*
+            WriteString((uint)parameterMemory[0], (string)"/b test");
+
+            data.Add(0x68); // Push ...
+            data.AddRange(BitConverter.GetBytes((uint)parameterMemory[0])); // string
+
+            data.Add(0xE8); // Call ...
+            int offset = (int)functionSendSay - ((int)parameterMemory[3] + 10);
+            data.AddRange(BitConverter.GetBytes(offset)); // functionCommand
+
+            data.Add(0xC3); // Return
+
+            WriteMemory((uint)parameterMemory[3], data.ToArray(), (uint)length);
+
+            IntPtr thread = CreateRemoteThread(handle, IntPtr.Zero, 0, (uint)0x053e0c00, IntPtr.Zero, 0, IntPtr.Zero);
+            WaitForSingleObject(thread, 0xFFFFFFFF);
+             */
+            #endregion
+        }
+    }
+}
