@@ -48,7 +48,9 @@
     <Compile Include="Misc.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemotePlayer.cs" />
     <Compile Include="Statistic.cs" />
+    <Compile Include="StructureRemotePlayer.cs" />
     <Compile Include="Vehicle.cs" />
     <Compile Include="World.cs" />
     <Compile Include="ZoneManager.cs" />
