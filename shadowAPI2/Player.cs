@@ -113,76 +113,8 @@ namespace shadowAPI2
             z = PlayerZ() - z;
             if ((x < radius) && (x > -radius) && (y < radius) && (y > -radius) && (z < radius) && (z > -radius))
                 return true;
-
-            return false;
-        }
-
-        public static bool IsPlayerConnected(string player)
-        {
-            if (!Memory.isInit)
-                Memory.Init();
-
-            for (int i = 0; i < 1003; i++) // 500 wegen Spielerlimit RGN | Normal: 1003 Evtl. 1003?
-            {
-                uint remotePlayer = BitConverter.ToUInt32(Memory.ReadMemory((uint)(Memory.structPlayers + Memory.structRemotePlayersOffset + i * 4), 4), 0);
-                int nameLength = Memory.ReadInteger(remotePlayer + Memory.remotePlayerStringLengthOffset);
-
-                if (nameLength < 16)
-                {
-                    string name = Memory.ReadString(remotePlayer + Memory.remotePlayerUsernameOffset, (uint)nameLength);
-                    if (player.ToLower() == name.ToLower())
-                        return true;
-                }
-                else
-                {
-                    uint nameExtension = BitConverter.ToUInt32(Memory.ReadMemory(remotePlayer + Memory.remotePlayerUsernameOffset, 4), 0);
-                    string name = Memory.ReadString(nameExtension, (uint)nameLength);
-                    if (player.ToLower() == name.ToLower())
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool[] IsPlayerConnected(string[] player)
-        {
-            if (!Memory.isInit)
-                Memory.Init();
-
-            bool[] connected = new bool[player.Length];
-            for (int i = 0; i < 1003; i++) // 300 wegen nicht viel | 500 wegen Spielerlimit RGN | Normal: 1004 Evtl. 1003?
-            {
-                uint remotePlayer = BitConverter.ToUInt32(Memory.ReadMemory((uint)(Memory.structPlayers + Memory.structRemotePlayersOffset + i * 4), 4), 0);
-                int nameLength = Memory.ReadInteger(remotePlayer + Memory.remotePlayerStringLengthOffset);
-
-                if (nameLength < 16)
-                {
-                    string name = Memory.ReadString(remotePlayer + Memory.remotePlayerUsernameOffset, (uint)nameLength);
-                    for (int j = 0; j < player.Length; j++)
-                    {
-                        if (player[j].ToLower() == name.ToLower())
-                        {
-                            connected[j] = true;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    uint nameExtension = BitConverter.ToUInt32(Memory.ReadMemory(remotePlayer + Memory.remotePlayerUsernameOffset, 4), 0);
-                    string name = Memory.ReadString(nameExtension, (uint)nameLength);
-
-                    for (int j = 0; j < player.Length; j++)
-                    {
-                        if (player[j].ToLower() == name.ToLower())
-                        {
-                            connected[j] = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            return connected;
+            else
+                return false;
         }
     }
 }
