@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace shadowAPI2
 {
@@ -60,6 +61,13 @@ namespace shadowAPI2
                 Memory.Init();
 
             Memory.Call(Memory.functionAddChatMessage, new object[] {(int)Memory.chatMessage, "{" + color + "}" + text }, true);
+        }
+        public static void AddChatMessage(string text, Color color)
+        {
+            if (!Memory.isInit)
+                Memory.Init();
+
+            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Misc.ColorToHexRGB(color) + "}" + text }, true);
         }
     }
 }
