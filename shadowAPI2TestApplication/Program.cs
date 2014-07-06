@@ -16,6 +16,13 @@ namespace shadowAPI2TestApplication
             bool state = true;
 
             shadowAPI2.Chat.SendChat("UTF8: äüéö <= Gehts? :>");
+
+            string name = "Christian_Valente";
+            int id = shadowAPI2.RemotePlayer.PlayerIdByName(name);
+
+            shadowAPI2.Chat.SendChat("ID von " + name + ": " + id);
+            shadowAPI2.Chat.SendChat("Name von ID " + id + ": " + shadowAPI2.RemotePlayer.PlayerNameById((uint)id));
+
             while(true)
             {
                 System.Threading.Thread.Sleep(3500);
