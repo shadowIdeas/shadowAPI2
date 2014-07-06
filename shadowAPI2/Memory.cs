@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace shadowAPI2
 {
-    public class Memory
+    class Memory
     {
         /*
         Enable Multiple SA Windows:
@@ -118,6 +118,7 @@ namespace shadowAPI2
         private static uint structPlayersPoolOffset = 0x3D9;
         private static uint structPlayersOffset = 0x14;
         public static uint structRemotePlayersOffset = 0x2E;
+        public static uint structRemotePlayersDataOffset = 0x08;
         public static uint remotePlayerStringLengthOffset = 0x24;
         public static uint remotePlayerUsernameOffset = 0x14;
 
@@ -259,6 +260,15 @@ namespace shadowAPI2
             byte[] bytes = ReadMemory(address, 4);
 
             int result = BitConverter.ToInt32(bytes, 0);
+
+            return result;
+        }
+
+        public static uint ReadUInteger(uint address)
+        {
+            byte[] bytes = ReadMemory(address, 4);
+
+            uint result = BitConverter.ToUInt32(bytes, 0);
 
             return result;
         }
