@@ -15,6 +15,7 @@ namespace shadowAPI2
                 Memory.Init();
 
             bool result = Memory.ReadBoolean(Memory.isChatOpen);
+
             return result;
         }
 
@@ -24,6 +25,7 @@ namespace shadowAPI2
                 Memory.Init();
 
             bool result = Memory.ReadBoolean(Memory.isDialogOpen);
+
             return result;
         }
 
@@ -62,6 +64,7 @@ namespace shadowAPI2
 
             Memory.Call(Memory.functionAddChatMessage, new object[] {(int)Memory.chatMessage, "{" + color + "}" + text }, true);
         }
+
         public static void AddChatMessage(string text, Color color)
         {
             if (!Memory.isInit)

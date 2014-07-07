@@ -21,49 +21,53 @@ namespace shadowAPI2
         public static float VehicleDamage()
         {
             uint vehicle = 0;
-            if ((vehicle = IsInVehicle()) == 0)
-                return 0.0f;
+            float damage = -1.0f;
+            if ((vehicle = IsInVehicle()) != 0)
+            {
+                damage = Memory.ReadFloat(vehicle + Memory.vehicleOffsetDamage);
+            }
 
-            float result = Memory.ReadFloat(vehicle + Memory.vehicleOffsetDamage);
-
-            return result;
+            return damage;
         }
 
         public static float VehicleSpeed() // Buggy
         {
             uint vehicle = 0;
-            if ((vehicle = IsInVehicle()) == 0)
-                return 0.0f;
+            float speed = -1.0f;
+            if ((vehicle = IsInVehicle()) != 0)
+            {
+                float x = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedX));
+                float y = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedY));
+                float z = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedZ));
 
-            float x = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedX));
-            float y = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedY));
-            float z = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedZ));
+                speed = (x + y + z) * 140;
+            }
 
-            float result = (x + y + z) * 140; ;
-
-            return result;
+            return speed;
         }
 
         public static int VehicleCurrentId()
         {
             uint vehicle = 0;
-            if ((vehicle = IsInVehicle()) == 0)
-                return 0;
+            int id = -1;
+            if ((vehicle = IsInVehicle()) != 0)
+            {
+                id = Memory.ReadInteger(vehicle + Memory.vehicleOffsetId);
+            }
 
-            int result = Memory.ReadInteger(vehicle + Memory.vehicleOffsetId);
-
-            return result;
+            return id;
         }
 
         public static float VehicleCollideStatus()
         {
             uint vehicle = 0;
-            if ((vehicle = IsInVehicle()) == 0)
-                return 0.0f;
+            float collideStatus = -1.0f;
+            if ((vehicle = IsInVehicle()) != 0)
+            {
+                collideStatus = Memory.ReadFloat(vehicle + Memory.vehicleOffsetCollideStatus);
+            }
 
-            float result = Memory.ReadFloat(vehicle + Memory.vehicleOffsetCollideStatus);
-
-            return result;
+            return collideStatus;
         }
     }
 }

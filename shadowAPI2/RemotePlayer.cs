@@ -286,6 +286,7 @@ namespace shadowAPI2
                     }
                 }
             }
+
             return false;
         }
 
@@ -348,6 +349,7 @@ namespace shadowAPI2
                     }
                 }
             }
+
             return connected;
         }
     }

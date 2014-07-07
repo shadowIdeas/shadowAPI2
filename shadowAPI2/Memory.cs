@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace shadowAPI2
 {
-    class Memory
+    internal class Memory
     {
         /*
         Enable Multiple SA Windows:
@@ -19,24 +19,24 @@ namespace shadowAPI2
         // (c)shadowlif 2014 :>
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesRead);
+        private static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesRead);
         [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesWritten);
+        private static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesWritten);
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
+        private static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
         [DllImport("kernel32.dll")]
-        public static extern Int32 CloseHandle(IntPtr hObject);
+        private static extern Int32 CloseHandle(IntPtr hObject);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+        private static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, uint lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+        private static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, uint lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
+        private static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
 
-        public static bool isInit = false;
+        private static bool isInit = false;
 
-        const int RESERVE = 25;
+        private const int RESERVE = 25;
 
         // GTA and more
         private static uint pid = 0;
@@ -252,6 +252,7 @@ namespace shadowAPI2
             byte[] bytes = ReadMemory(address, length);
 
             string result = Encoding.ASCII.GetString(bytes);
+
             return result;
         }
 
@@ -350,10 +351,12 @@ namespace shadowAPI2
         public static bool WriteMemory(uint address, byte[] bytes, uint size)
         {
             uint bytesWritten = 0;
-             if (WriteProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesWritten))
-                return true;
-            int x = Marshal.GetLastWin32Error();
-            return false;
+            bool result = false;
+
+            if (WriteProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesWritten))
+                result = true;
+
+            return result;
         }
 
         public static bool WriteString(uint address, string text)
@@ -372,7 +375,7 @@ namespace shadowAPI2
 
         public static void Call(uint address, object[] parameter, bool stackClear)
         {
-            List<byte> data = new List<byte>(); // Liste um einfacher alles einzufügen
+            List<byte> data = new List<byte>();
 
             int usedParameters = 0;
             for (int i = parameter.Length-1; i >= 0; i--)
@@ -404,46 +407,32 @@ namespace shadowAPI2
                 else
                     return;
 
-                data.Add(0x68); // Push ...
-                data.AddRange(BitConverter.GetBytes((uint)memoryAddress)); // parameter
+                data.Add(0x68);
+                data.AddRange(BitConverter.GetBytes((uint)memoryAddress));
             }
 
-            data.Add(0xE8); // Call ...
+            data.Add(0xE8);
             int offset = (int)address - ((int)parameterMemory[parameterMemory.Length-1] + (parameter.Length * 5 + 5));
-            data.AddRange(BitConverter.GetBytes(offset)); // functionCommand
+            data.AddRange(BitConverter.GetBytes(offset));
 
             if(stackClear)
             {
                 data.AddRange(new byte[] {0x83, 0xC4});
                 data.Add(Convert.ToByte(parameter.Length * 4));
             }
-            data.Add(0xC3); // Return
+            data.Add(0xC3);
 
             if (!WriteMemory((uint)parameterMemory[parameterMemory.Length - 1], data.ToArray(), (uint)data.Count))
                 return;
 
             IntPtr thread = CreateRemoteThread(handle, IntPtr.Zero, 0, (uint)parameterMemory[parameterMemory.Length-1], IntPtr.Zero, 0, IntPtr.Zero);
-            WaitForSingleObject(thread, 0xFFFFFFFF); // Verursacht ruckler? Teste es bei dir :) | Benötigt!
-
-            #region test
-            /*
-            WriteString((uint)parameterMemory[0], (string)"/b test");
-
-            data.Add(0x68); // Push ...
-            data.AddRange(BitConverter.GetBytes((uint)parameterMemory[0])); // string
-
-            data.Add(0xE8); // Call ...
-            int offset = (int)functionSendSay - ((int)parameterMemory[3] + 10);
-            data.AddRange(BitConverter.GetBytes(offset)); // functionCommand
-
-            data.Add(0xC3); // Return
-
-            WriteMemory((uint)parameterMemory[3], data.ToArray(), (uint)length);
-
-            IntPtr thread = CreateRemoteThread(handle, IntPtr.Zero, 0, (uint)0x053e0c00, IntPtr.Zero, 0, IntPtr.Zero);
             WaitForSingleObject(thread, 0xFFFFFFFF);
-             */
-            #endregion
+        }
+
+
+        public bool IsInit
+        {
+            get { return isInit; }
         }
     }
 }

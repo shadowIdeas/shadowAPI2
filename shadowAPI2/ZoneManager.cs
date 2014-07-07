@@ -8,11 +8,12 @@ namespace shadowAPI2
 {
     class ZoneManager
     {
-        static List<string> cityName;
-        static List<float[]> cityPosition;
+        private static List<string> cityName;
+        private static List<float[]> cityPosition;
 
-        static List<string> zoneName;
-        static List<float[]> zonePosition;
+        private static List<string> zoneName;
+        private static List<float[]> zonePosition;
+
         public static void Init()
         {
             cityName = new List<string>();
@@ -427,6 +428,7 @@ namespace shadowAPI2
 
         public static string City(float x, float y, float z)
         {
+            string city = "NULL";
             for (int i = 0; i < cityName.Count; i++)
             {
                 string name = cityName[i];
@@ -434,14 +436,16 @@ namespace shadowAPI2
 
                 if (x >= pos[0] && y >= pos[1] && z >= pos[2] && x <= pos[3] && y <= pos[4] && z <= pos[5])
                 {
-                    return name;
+                    city = name;
                 }
             }
-            return "NULL";
+
+            return city;
         }
 
         public static string Zone(float x, float y, float z)
         {
+            string zone = "NULL";
             for (int i = 0; i < zoneName.Count; i++)
             {
                 string name = zoneName[i];
@@ -449,10 +453,12 @@ namespace shadowAPI2
 
                 if (x >= pos[0] && y >= pos[1] && z >= pos[2] && x <= pos[3] && y <= pos[4] && z <= pos[5])
                 {
-                    return name;
+                    zone = name;
+                    break;
                 }
             }
-            return "NULL";
+
+            return zone;
         }
     }
 }

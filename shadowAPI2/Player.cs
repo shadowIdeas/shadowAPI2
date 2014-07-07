@@ -33,7 +33,7 @@ namespace shadowAPI2
             if (!Memory.isInit)
                 Memory.Init();
 
-            float x = Memory.ReadFloat(Memory.playerPositionX);
+            float result = Memory.ReadFloat(Memory.playerPositionX);
 
             return x;
         }
@@ -43,7 +43,7 @@ namespace shadowAPI2
             if (!Memory.isInit)
                 Memory.Init();
 
-            float y = Memory.ReadFloat(Memory.playerPositionY);
+            float result = Memory.ReadFloat(Memory.playerPositionY);
 
             return y;
         }
@@ -53,7 +53,7 @@ namespace shadowAPI2
             if (!Memory.isInit)
                 Memory.Init();
 
-            float z = Memory.ReadFloat(Memory.playerPositionZ);
+            float result = Memory.ReadFloat(Memory.playerPositionZ);
 
             return z;
         }
@@ -88,6 +88,7 @@ namespace shadowAPI2
                 Memory.Init();
 
             int result = Memory.ReadInteger(Memory.playerLocation);
+
             if (result == 0)
                 return false;
             else
@@ -100,6 +101,7 @@ namespace shadowAPI2
                 Memory.Init();
 
             uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.vehicleOffsetBase, 4), 0);
+
             if (result == 0)
                 return false;
             else
@@ -111,6 +113,7 @@ namespace shadowAPI2
             x = PlayerX() - x;
             y = PlayerY() - y;
             z = PlayerZ() - z;
+
             if ((x < radius) && (x > -radius) && (y < radius) && (y > -radius) && (z < radius) && (z > -radius))
                 return true;
             else
