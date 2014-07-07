@@ -10,7 +10,7 @@ namespace shadowAPI2
     {
         static uint IsInVehicle()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.vehicleOffsetBase, 4), 0);

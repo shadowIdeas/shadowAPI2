@@ -10,7 +10,7 @@ namespace shadowAPI2
     {
         public static int PlayerHealth()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             int result = (int)Memory.ReadFloat(Memory.playerHealth);
@@ -20,7 +20,7 @@ namespace shadowAPI2
 
         public static int PlayerArmor()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             int result = (int)Memory.ReadFloat(Memory.playerArmor);
@@ -30,37 +30,37 @@ namespace shadowAPI2
 
         public static float PlayerX()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.playerPositionX);
 
-            return x;
+            return result;
         }
 
         public static float PlayerY()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.playerPositionY);
 
-            return y;
+            return result;
         }
 
         public static float PlayerZ()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.playerPositionZ);
 
-            return z;
+            return result;
         }
 
         public static string PlayerCity()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float x = Memory.ReadFloat(Memory.playerPositionX);
@@ -72,7 +72,7 @@ namespace shadowAPI2
 
         public static string PlayerZone()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float x = Memory.ReadFloat(Memory.playerPositionX);
@@ -84,7 +84,7 @@ namespace shadowAPI2
 
         public static bool IsInInterior()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             int result = Memory.ReadInteger(Memory.playerLocation);
@@ -97,7 +97,7 @@ namespace shadowAPI2
 
         public static bool IsInVehicle()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.vehicleOffsetBase, 4), 0);

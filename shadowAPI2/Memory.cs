@@ -430,7 +430,7 @@ namespace shadowAPI2
         }
 
 
-        public bool IsInit
+        public static bool IsInit
         {
             get { return isInit; }
         }

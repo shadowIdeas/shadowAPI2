@@ -12,7 +12,7 @@ namespace shadowAPI2
 
         public static int PlayerIdByName(string player, bool reloadData = true)
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             int id = -1;
@@ -65,7 +65,7 @@ namespace shadowAPI2
 
         public static int[] PlayerIdByName(string[] player, bool reloadData = true)
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             int[] id = Enumerable.Repeat(-1, player.Length).ToArray();
@@ -134,7 +134,7 @@ namespace shadowAPI2
 
         public static string PlayerNameById(uint id, bool reloadId = true)
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             string name = "";
@@ -178,7 +178,7 @@ namespace shadowAPI2
 
         public static string[] PlayerNameById(uint[] id, bool reloadId = true)
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             string[] name = new string[id.Length];
@@ -223,7 +223,7 @@ namespace shadowAPI2
 
         public static int PlayerScoreById(uint id, bool reloadId = true)
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             int score = -1;
@@ -249,7 +249,7 @@ namespace shadowAPI2
 
         public static bool IsPlayerConnected(string player, bool reloadData = true)
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             if(!reloadData)
@@ -292,7 +292,7 @@ namespace shadowAPI2
 
         public static bool[] IsPlayerConnected(string[] player, bool reloadData = true)
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             bool[] connected = new bool[player.Length];

@@ -10,7 +10,7 @@ namespace shadowAPI2
     {
         public static float StatisticFeetMeters()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.statisticFeetMeters);
@@ -19,7 +19,7 @@ namespace shadowAPI2
         }
         public static float StatisticVehicleMeters()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.statisticVehicleMeters);
@@ -28,7 +28,7 @@ namespace shadowAPI2
         }
         public static float StatisticBikeMeters()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.statisticBikeMeters);
@@ -37,7 +37,7 @@ namespace shadowAPI2
         }
         public static float StatisticHelicopterMeters()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.statisticHelicopterMeters);
@@ -46,7 +46,7 @@ namespace shadowAPI2
         }
         public static float StatisticShipMeters()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.statisticShipMeters);
@@ -55,7 +55,7 @@ namespace shadowAPI2
         }
         public static float StatisticSwimMeters()
         {
-            if (!Memory.isInit)
+            if (!Memory.IsInit)
                 Memory.Init();
 
             float result = Memory.ReadFloat(Memory.statisticSwimMeters);
