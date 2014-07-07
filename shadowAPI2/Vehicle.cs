@@ -13,7 +13,6 @@ namespace shadowAPI2
             if (!Memory.isInit)
                 Memory.Init();
 
-
             uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.vehicleOffsetBase, 4), 0);
 
             return result;
@@ -21,9 +20,6 @@ namespace shadowAPI2
 
         public static float VehicleDamage()
         {
-            if (!Memory.isInit)
-                Memory.Init();
-
             uint vehicle = 0;
             if ((vehicle = IsInVehicle()) == 0)
                 return 0.0f;
@@ -35,9 +31,6 @@ namespace shadowAPI2
 
         public static float VehicleSpeed() // Buggy
         {
-            if (!Memory.isInit)
-                Memory.Init();
-
             uint vehicle = 0;
             if ((vehicle = IsInVehicle()) == 0)
                 return 0.0f;
@@ -53,9 +46,6 @@ namespace shadowAPI2
 
         public static int VehicleCurrentId()
         {
-            if (!Memory.isInit)
-                Memory.Init();
-
             uint vehicle = 0;
             if ((vehicle = IsInVehicle()) == 0)
                 return 0;
@@ -67,9 +57,6 @@ namespace shadowAPI2
 
         public static float VehicleCollideStatus()
         {
-            if (!Memory.isInit)
-                Memory.Init();
-
             uint vehicle = 0;
             if ((vehicle = IsInVehicle()) == 0)
                 return 0.0f;
@@ -77,19 +64,6 @@ namespace shadowAPI2
             float result = Memory.ReadFloat(vehicle + Memory.vehicleOffsetCollideStatus);
 
             return result;
-        }
-
-        // Ab hier: Funny stuff :D
-        public static void FUNNY_CreateWaterSplashes()
-        {
-            if (!Memory.isInit)
-                Memory.Init();
-
-            //uint vehicle = 0;
-            //if ((vehicle = IsInVehicle()) == 0)
-            //    return;
-
-            Memory.Call(0x583820, new object[] { 4, Player.PlayerX(), Player.PlayerY(), Player.PlayerZ(), 0, 2, 0 }, true);
         }
     }
 }
