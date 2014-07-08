@@ -10,14 +10,7 @@ namespace shadowAPI2
 {
     internal class Memory
     {
-        /*
-        Enable Multiple SA Windows:
-        0x7468E0 : (func) CheckForOtherSA(void)
-        0x74872D : (asm) call CheckForOtherSA (NOP this in the exe)
-        */
-
-        // (c)shadowlif 2014 :>
-
+        #region DLLImport
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesRead);
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -33,8 +26,7 @@ namespace shadowAPI2
         private static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, uint lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
-
-        private static bool isInit = false;
+        #endregion
 
         private const int RESERVE = 25;
 
@@ -44,8 +36,13 @@ namespace shadowAPI2
         private static uint sampModule = 0;
         private static uint gtaModule = 0;
 
+        private static bool isInit = false;
+
         private static IntPtr allocMemory = IntPtr.Zero;
-        public static IntPtr[] parameterMemory = new IntPtr[RESERVE];
+        private static IntPtr[] parameterMemory = new IntPtr[RESERVE];
+
+        // Read addresses
+        #region Need for Player class
         // Player
         private static uint playerOffsetBase = 0xB6F5F0;
 
@@ -74,7 +71,8 @@ namespace shadowAPI2
         // Location
         private static uint playerOffsetLocation = 0x2F;
         public static uint playerLocation = 0;
-
+        #endregion
+        #region Need for Vehicle class
         // Car
         public static uint vehicleOffsetBase = 0xBA18FC;
 
@@ -87,7 +85,8 @@ namespace shadowAPI2
         public static uint vehicleOffsetSpeedZ = 0x4C;
 
         public static uint vehicleOffsetCollideStatus = 0xD8;
-
+        #endregion
+        #region Need for Statistic class
         // Stats
         public static uint statisticFeetMeters = 0xB7938C;
         public static uint statisticVehicleMeters = 0xB79390;
@@ -95,8 +94,8 @@ namespace shadowAPI2
         public static uint statisticHelicopterMeters = 0xB793A0;
         public static uint statisticShipMeters = 0xB79398;
         public static uint statisticSwimMeters = 0xB793E8;
-
-        // SAMP
+        #endregion
+        #region Need for Chat class
         // Chat
         private static uint chatMessageOffset = 0x212A6C;
         private static uint chatOffset = 0x212A94;
@@ -112,7 +111,8 @@ namespace shadowAPI2
 
         private static uint dialog = 0;
         public static uint isDialogOpen = 0;
-
+        #endregion
+        #region Need for RemotePlayer class
         // Scoreboard
         private static uint structSampOffset = 0x212A80;
         private static uint structPlayersPoolOffset = 0x3D9;
@@ -125,12 +125,10 @@ namespace shadowAPI2
         private static uint structSamp = 0;
         private static uint structPlayersPool = 0;
         public static uint structPlayers = 0;
+        #endregion
 
-
-        // Functions
-
-        // SAMP
-
+        // Function addresses
+        #region Need for Chat class
         // Chat
         private static uint functionSendSayOffset = 0x4CA0;
         private static uint functionSendCommandOffset = 0x7BDD0;
@@ -139,6 +137,7 @@ namespace shadowAPI2
         public static uint functionSendSay = 0;
         public static uint functionSendCommand = 0;
         public static uint functionAddChatMessage = 0;
+        #endregion
 
         public static void Init()
         {
@@ -433,6 +432,11 @@ namespace shadowAPI2
         public static bool IsInit
         {
             get { return isInit; }
+        }
+
+        public static IntPtr[] ParameterMemory
+        {
+            get { return parameterMemory; }
         }
     }
 }
