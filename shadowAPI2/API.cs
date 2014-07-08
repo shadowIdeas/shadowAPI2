@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace shadowAPI2
 {
-    public class API
+    public static class API
     {
         public static void Init()
         {
