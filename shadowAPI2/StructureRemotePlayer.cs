@@ -5,7 +5,7 @@ using System.Text;
 
 namespace shadowAPI2
 {
-    private struct StructureRemotePlayer
+    struct StructureRemotePlayer
     {
         public uint id { get; set; }
         public int score { get; set; }
