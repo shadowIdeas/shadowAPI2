@@ -223,8 +223,6 @@ namespace shadowAPI2
                 functionAddChatMessage = sampModule + functionAddChatMessageOffset;
                 #endregion
 
-                ZoneManager.Init();
-
                 isInit = true;
             }
         }
