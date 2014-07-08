@@ -8,7 +8,22 @@ namespace shadowAPI2
 {
     public class Statistic
     {
-        public static float StatisticFeetMeters()
+        private static Statistic instance;
+
+        private Statistic()
+        {
+
+        }
+
+        public static Statistic GetInstance()
+        {
+            if (instance == null)
+                instance = new Statistic();
+
+            return instance;
+        }
+
+        public float StatisticFeetMeters()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -17,7 +32,8 @@ namespace shadowAPI2
 
             return result;
         }
-        public static float StatisticVehicleMeters()
+
+        public float StatisticVehicleMeters()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -26,7 +42,8 @@ namespace shadowAPI2
 
             return result;
         }
-        public static float StatisticBikeMeters()
+
+        public float StatisticBikeMeters()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -35,7 +52,8 @@ namespace shadowAPI2
 
             return result;
         }
-        public static float StatisticHelicopterMeters()
+
+        public float StatisticHelicopterMeters()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -44,7 +62,8 @@ namespace shadowAPI2
 
             return result;
         }
-        public static float StatisticShipMeters()
+
+        public float StatisticShipMeters()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -53,7 +72,8 @@ namespace shadowAPI2
 
             return result;
         }
-        public static float StatisticSwimMeters()
+
+        public float StatisticSwimMeters()
         {
             if (!Memory.IsInit)
                 Memory.Init();

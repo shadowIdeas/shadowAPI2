@@ -8,7 +8,24 @@ namespace shadowAPI2
 {
     public class Player
     {
-        public static int PlayerHealth()
+        private static Player instance;
+
+        private ZoneManager zoneManager;
+
+        private Player()
+        {
+            zoneManager = ZoneManager.GetInstance();
+        }
+
+        public static Player GetInstance()
+        {
+            if (instance == null)
+                instance = new Player();
+
+            return instance;
+        }
+
+        public int PlayerHealth()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -18,7 +35,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static int PlayerArmor()
+        public int PlayerArmor()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -28,7 +45,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static float PlayerX()
+        public float PlayerX()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -38,7 +55,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static float PlayerY()
+        public float PlayerY()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -48,7 +65,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static float PlayerZ()
+        public float PlayerZ()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -58,7 +75,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static string PlayerCity()
+        public string PlayerCity()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -67,10 +84,10 @@ namespace shadowAPI2
             float y = Memory.ReadFloat(Memory.playerPositionY);
             float z = Memory.ReadFloat(Memory.playerPositionZ);
 
-            return ZoneManager.City(x, y, z);
+            return zoneManager.City(x, y, z);
         }
 
-        public static string PlayerZone()
+        public string PlayerZone()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -79,10 +96,10 @@ namespace shadowAPI2
             float y = Memory.ReadFloat(Memory.playerPositionY);
             float z = Memory.ReadFloat(Memory.playerPositionZ);
 
-            return ZoneManager.Zone(x, y, z);
+            return zoneManager.Zone(x, y, z);
         }
 
-        public static bool IsInInterior()
+        public bool IsInInterior()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -95,7 +112,7 @@ namespace shadowAPI2
                 return true;
         }
 
-        public static bool IsInVehicle()
+        public bool IsInVehicle()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -108,7 +125,7 @@ namespace shadowAPI2
                 return true;
         }
 
-        public static bool IsInRangeOf(float x, float y, float z, float radius)
+        public bool IsInRangeOf(float x, float y, float z, float radius)
         {
             x = PlayerX() - x;
             y = PlayerY() - y;

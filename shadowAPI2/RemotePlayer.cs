@@ -5,12 +5,28 @@ using System.Text;
 
 namespace shadowAPI2
 {
-    public static class RemotePlayer
+    public class RemotePlayer
     {
         // TODO Using the struct more
-        private static StructureRemotePlayer[] remotePlayers = new StructureRemotePlayer[1003];
+        // TODO Remake of the class (OOP)
+        private static RemotePlayer instance;
 
-        public static int PlayerIdByName(string player, bool reloadData = true)
+        private StructureRemotePlayer[] remotePlayers = new StructureRemotePlayer[1003];
+
+        private RemotePlayer()
+        { 
+            
+        }
+
+        public static RemotePlayer GetInstance()
+        {
+            if (instance == null)
+                instance = new RemotePlayer();
+
+            return instance;
+        }
+
+        public int PlayerIdByName(string player, bool reloadData = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -63,7 +79,7 @@ namespace shadowAPI2
             return id;
         }
 
-        public static int[] PlayerIdByName(string[] player, bool reloadData = true)
+        public int[] PlayerIdByName(string[] player, bool reloadData = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -132,7 +148,7 @@ namespace shadowAPI2
             return id;
         }
 
-        public static string PlayerNameById(uint id, bool reloadId = true)
+        public string PlayerNameById(uint id, bool reloadId = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -176,7 +192,7 @@ namespace shadowAPI2
             return name;
         }
 
-        public static string[] PlayerNameById(uint[] id, bool reloadId = true)
+        public string[] PlayerNameById(uint[] id, bool reloadId = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -221,7 +237,7 @@ namespace shadowAPI2
             return name;
         }
 
-        public static int PlayerScoreById(uint id, bool reloadId = true)
+        public int PlayerScoreById(uint id, bool reloadId = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -247,7 +263,7 @@ namespace shadowAPI2
             return score;
         }
 
-        public static bool IsPlayerConnected(string player, bool reloadData = true)
+        public bool IsPlayerConnected(string player, bool reloadData = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -290,7 +306,7 @@ namespace shadowAPI2
             return false;
         }
 
-        public static bool[] IsPlayerConnected(string[] player, bool reloadData = true)
+        public bool[] IsPlayerConnected(string[] player, bool reloadData = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();

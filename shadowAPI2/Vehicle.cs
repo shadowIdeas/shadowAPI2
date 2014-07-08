@@ -8,7 +8,23 @@ namespace shadowAPI2
 {
     public class Vehicle
     {
-        static uint IsInVehicle()
+        private static Vehicle instance;
+
+        private Vehicle()
+        {
+
+        }
+
+        public static Vehicle GetInstance()
+        {
+            if (instance == null)
+                instance = new Vehicle();
+
+            return instance;
+        }
+
+
+        private uint IsInVehicle()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -18,7 +34,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static float VehicleDamage()
+        public float VehicleDamage()
         {
             uint vehicle = 0;
             float damage = -1.0f;
@@ -30,7 +46,7 @@ namespace shadowAPI2
             return damage;
         }
 
-        public static float VehicleSpeed() // Buggy
+        public float VehicleSpeed() // Buggy
         {
             uint vehicle = 0;
             float speed = -1.0f;
@@ -46,7 +62,7 @@ namespace shadowAPI2
             return speed;
         }
 
-        public static int VehicleCurrentId()
+        public int VehicleCurrentId()
         {
             uint vehicle = 0;
             int id = -1;
@@ -58,7 +74,7 @@ namespace shadowAPI2
             return id;
         }
 
-        public static float VehicleCollideStatus()
+        public float VehicleCollideStatus()
         {
             uint vehicle = 0;
             float collideStatus = -1.0f;

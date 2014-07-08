@@ -7,9 +7,24 @@ using System.Drawing;
 
 namespace shadowAPI2
 {
-    public static class Chat
+    public class Chat
     {
-        public static bool IsChatOpen()
+        private static Chat instance;
+
+        private Chat()
+        {
+
+        }
+
+        public static Chat GetInstance()
+        {
+            if (instance == null)
+                instance = new Chat();
+
+            return instance;
+        }
+
+        public bool IsChatOpen()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -19,7 +34,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static bool IsDialogOpen()
+        public bool IsDialogOpen()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -29,7 +44,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static void SendChat(string message, int state = 0)
+        public void SendChat(string message, int state = 0)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -57,7 +72,7 @@ namespace shadowAPI2
             }
         }
 
-        public static void AddChatMessage(string text, string color = "FFFFFF")
+        public void AddChatMessage(string text, string color = "FFFFFF")
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -65,7 +80,7 @@ namespace shadowAPI2
             Memory.Call(Memory.functionAddChatMessage, new object[] {(int)Memory.chatMessage, "{" + color + "}" + text }, true);
         }
 
-        public static void AddChatMessage(string text, Color color)
+        public void AddChatMessage(string text, Color color)
         {
             if (!Memory.IsInit)
                 Memory.Init();

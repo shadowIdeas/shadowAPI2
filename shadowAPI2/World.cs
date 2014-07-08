@@ -7,8 +7,24 @@ namespace shadowAPI2
 {
     public class World
     {
-        public static void CreateVojel()
+        private static World instance;
+
+        private World()
         {
+
+        }
+
+        public static World GetInstance()
+        {
+            if(instance == null)
+                instance = new World();
+
+            return instance;
+        }
+
+        public void CreateVojel()
+        {
+            /*
             float x = Player.PlayerX();
             float y = Player.PlayerY();
             float z = Player.PlayerZ();
@@ -18,6 +34,7 @@ namespace shadowAPI2
             float destZ = z + 5.0f;
 
             Memory.Call(0x711EF0, new object[] { x, y, z, destX, destY, destZ, 1, 1, 1 }, true);
+             */
         }
     }
 }
