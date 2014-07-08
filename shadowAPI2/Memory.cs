@@ -139,7 +139,7 @@ namespace shadowAPI2
         public static uint functionAddChatMessage = 0;
         #endregion
 
-        public static void Init()
+        internal static void Init()
         {
             if (!isInit)
             {
@@ -229,7 +229,7 @@ namespace shadowAPI2
             }
         }
 
-        public static void ReInit()
+        internal static void ReInit()
         {
             isInit = false;
             CloseHandle(handle);
@@ -237,7 +237,7 @@ namespace shadowAPI2
             sampModule = 0;
         }
 
-        public static bool ReadBoolean(uint address)
+        internal static bool ReadBoolean(uint address)
         {
             byte[] bytes = ReadMemory(address, 1);
 
@@ -246,7 +246,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static string ReadString(uint address, uint length)
+        internal static string ReadString(uint address, uint length)
         {
             byte[] bytes = ReadMemory(address, length);
 
@@ -255,7 +255,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static int ReadInteger(uint address)
+        internal static int ReadInteger(uint address)
         {
             byte[] bytes = ReadMemory(address, 4);
 
@@ -264,7 +264,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static uint ReadUInteger(uint address)
+        internal static uint ReadUInteger(uint address)
         {
             byte[] bytes = ReadMemory(address, 4);
 
@@ -273,7 +273,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static float ReadFloat(uint address)
+        internal static float ReadFloat(uint address)
         {
             byte[] bytes = ReadMemory(address, 4);
 
@@ -282,7 +282,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public static byte[] ReadMemory(uint address, uint size)
+        internal static byte[] ReadMemory(uint address, uint size)
         {
             byte[] bytes = new byte[size];
             uint bytesReaded = 0;
@@ -333,7 +333,7 @@ namespace shadowAPI2
             return bytes;
         }
 
-        public static void WriteBoolean(uint address, bool boolean)
+        internal static void WriteBoolean(uint address, bool boolean)
         {
             if (boolean)
                 WriteMemory(address, new byte[] { 0 }, 1);
@@ -342,12 +342,12 @@ namespace shadowAPI2
 
         }
 
-        public static void WriteByte(uint address, byte value)
+        internal static void WriteByte(uint address, byte value)
         {
             WriteMemory(address, new byte[] { value }, 1);
         }
 
-        public static bool WriteMemory(uint address, byte[] bytes, uint size)
+        internal static bool WriteMemory(uint address, byte[] bytes, uint size)
         {
             uint bytesWritten = 0;
             bool result = false;
@@ -358,21 +358,21 @@ namespace shadowAPI2
             return result;
         }
 
-        public static bool WriteString(uint address, string text)
+        internal static bool WriteString(uint address, string text)
         {
             byte[] bytes = Encoding.Default.GetBytes(text);
 
             return WriteMemory(address, bytes, (uint)512);
         }
 
-        public static bool WriteFloat(uint address, float dec)
+        internal static bool WriteFloat(uint address, float dec)
         {
             byte[] bytes = BitConverter.GetBytes(dec);
 
             return WriteMemory(address, bytes, (uint)512);
         }
 
-        public static void Call(uint address, object[] parameter, bool stackClear)
+        internal static void Call(uint address, object[] parameter, bool stackClear)
         {
             List<byte> data = new List<byte>();
 
@@ -429,12 +429,12 @@ namespace shadowAPI2
         }
 
 
-        public static bool IsInit
+        internal static bool IsInit
         {
             get { return isInit; }
         }
 
-        public static IntPtr[] ParameterMemory
+        internal static IntPtr[] ParameterMemory
         {
             get { return parameterMemory; }
         }
