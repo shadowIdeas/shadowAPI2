@@ -4,30 +4,45 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+
 namespace shadowAPI2TestApplication
 {
     class Program
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Test Application started, press ENTER to start the test");
+            Console.ReadLine();
             shadowAPI2.API.Init();
 
+            Console.WriteLine("Waiting 5 Seconds...");
             System.Threading.Thread.Sleep(5000);
-            bool state = true;
 
-            shadowAPI2.Chat.SendChat("UTF8: äüéö <= Gehts? :>");
+            Console.WriteLine("Sending Test-Message (UTF-8 Symbols included)...");
+            shadowAPI2.Chat.SendChat("UTF8: äüéö <= Gehts? :>");            
 
-            string name = "Christian_Valente";
-            int id = shadowAPI2.RemotePlayer.PlayerIdByName(name);
-
-            shadowAPI2.Chat.SendChat("ID von " + name + ": " + id);
-            shadowAPI2.Chat.SendChat("Name von ID " + id + ": " + shadowAPI2.RemotePlayer.PlayerNameById((uint)id));
-
-            while(true)
+            int id = -1;
+            String name = "";
+            while(id == -1)
             {
-                System.Threading.Thread.Sleep(3500);
+                Console.Write("Which player-name should be queried: ");
+                name = Console.ReadLine();
+                id = shadowAPI2.RemotePlayer.PlayerIdByName(name,true);
+                if (id == -1)
+                    Console.WriteLine("Player '" + name + "' not found");
             }
+            Console.WriteLine("Player '" + name + "' has the ID: " + id);
 
+            Console.WriteLine("Testing AddChatMessage...");
+            shadowAPI2.Chat.AddChatMessage("ID von " + name + ": " + id,Color.Yellow);
+            shadowAPI2.Chat.AddChatMessage("Name von ID " + id + ": " + shadowAPI2.RemotePlayer.PlayerNameById((uint)id),Color.Turquoise);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Test completed [You can go into SA:MP and check your Chat-Messages]");
+            Console.ReadLine();
+
+            //Old
             //shadowAPI2.Chat.SendChat("/b Test");
             //shadowAPI2.Chat.SendChat("/b Test", 2);
             //shadowAPI2.Chat.SendChat("Test");
