@@ -115,7 +115,7 @@ namespace shadowAPI2
         /// Get the current zone of the player
         /// </summary>
         /// <returns>Zone</returns>
-        public string GetPlayerZone()
+        public string GetZone()
         {
             if (!Memory.IsInit)
                 Memory.Init();
