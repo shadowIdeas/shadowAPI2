@@ -24,7 +24,7 @@ namespace shadowAPI2
             return instance;
         }
 
-        public bool IsChatOpen()
+        public bool IsOpen()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -44,7 +44,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public void SendChat(string message, int state = 0)
+        public void Send(string message, int state = 0)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -72,7 +72,7 @@ namespace shadowAPI2
             }
         }
 
-        public void AddChatMessage(string text, string color = "FFFFFF")
+        public void AddMessage(string text, string color = "FFFFFF")
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -80,7 +80,7 @@ namespace shadowAPI2
             Memory.Call(Memory.functionAddChatMessage, new object[] {(int)Memory.chatMessage, "{" + color + "}" + text }, true);
         }
 
-        public void AddChatMessage(string text, Color color)
+        public void AddMessage(string text, Color color)
         {
             if (!Memory.IsInit)
                 Memory.Init();

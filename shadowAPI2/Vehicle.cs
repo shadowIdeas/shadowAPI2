@@ -24,7 +24,7 @@ namespace shadowAPI2
         }
 
 
-        private uint IsInVehicle()
+        private uint IsInVehicle() // TODO In Player class?
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -34,7 +34,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public float VehicleDamage()
+        public float GetDl()
         {
             uint vehicle = 0;
             float damage = -1.0f;
@@ -46,7 +46,7 @@ namespace shadowAPI2
             return damage;
         }
 
-        public float VehicleSpeed() // Buggy
+        public float GetSpeed() // Buggy
         {
             uint vehicle = 0;
             float speed = -1.0f;
@@ -62,7 +62,7 @@ namespace shadowAPI2
             return speed;
         }
 
-        public int VehicleCurrentId()
+        public int GetId()
         {
             uint vehicle = 0;
             int id = -1;
@@ -74,7 +74,7 @@ namespace shadowAPI2
             return id;
         }
 
-        public float VehicleCollideStatus()
+        public float GetCollideStatus()
         {
             uint vehicle = 0;
             float collideStatus = -1.0f;

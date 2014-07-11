@@ -337,7 +337,6 @@ namespace shadowAPI2
                 WriteMemory(address, new byte[] { 0 }, 1);
             else
                 WriteMemory(address, new byte[] { 1 }, 1);
-
         }
 
         internal static void WriteByte(uint address, byte value)

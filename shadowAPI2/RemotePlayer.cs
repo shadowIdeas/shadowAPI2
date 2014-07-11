@@ -26,7 +26,7 @@ namespace shadowAPI2
             return instance;
         }
 
-        public int PlayerIdByName(string player, bool reloadData = true)
+        public int GetPlayerIdByName(string player, bool reloadData = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -79,7 +79,7 @@ namespace shadowAPI2
             return id;
         }
 
-        public int[] PlayerIdByName(string[] player, bool reloadData = true)
+        public int[] GetPlayerIdByName(string[] player, bool reloadData = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -148,7 +148,7 @@ namespace shadowAPI2
             return id;
         }
 
-        public string PlayerNameById(uint id, bool reloadId = true)
+        public string GetPlayerNameById(uint id, bool reloadId = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -192,7 +192,7 @@ namespace shadowAPI2
             return name;
         }
 
-        public string[] PlayerNameById(uint[] id, bool reloadId = true)
+        public string[] GetPlayerNameById(uint[] id, bool reloadId = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -237,7 +237,7 @@ namespace shadowAPI2
             return name;
         }
 
-        public int PlayerScoreById(uint id, bool reloadId = true)
+        public int GetPlayerScoreById(uint id, bool reloadId = true)
         {
             if (!Memory.IsInit)
                 Memory.Init();

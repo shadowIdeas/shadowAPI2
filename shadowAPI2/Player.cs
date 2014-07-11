@@ -25,7 +25,7 @@ namespace shadowAPI2
             return instance;
         }
 
-        public int PlayerHealth()
+        public int GetHealth()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -35,7 +35,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public int PlayerArmor()
+        public int GetArmor()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -45,7 +45,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public float PlayerX()
+        public float GetX()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -55,7 +55,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public float PlayerY()
+        public float GetY()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -65,7 +65,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public float PlayerZ()
+        public float GetZ()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -75,7 +75,7 @@ namespace shadowAPI2
             return result;
         }
 
-        public string PlayerCity()
+        public string GetCity()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -87,7 +87,7 @@ namespace shadowAPI2
             return zoneManager.City(x, y, z);
         }
 
-        public string PlayerZone()
+        public string GetPlayerZone()
         {
             if (!Memory.IsInit)
                 Memory.Init();
@@ -127,9 +127,9 @@ namespace shadowAPI2
 
         public bool IsInRangeOf(float x, float y, float z, float radius)
         {
-            x = PlayerX() - x;
-            y = PlayerY() - y;
-            z = PlayerZ() - z;
+            x = GetX() - x;
+            y = GetY() - y;
+            z = GetZ() - z;
 
             if ((x < radius) && (x > -radius) && (y < radius) && (y > -radius) && (z < radius) && (z > -radius))
                 return true;
