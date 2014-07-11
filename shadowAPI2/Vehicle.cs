@@ -90,7 +90,7 @@ namespace shadowAPI2
         /// Get the model id of the current vehicle
         /// </summary>
         /// <returns>Id</returns>
-        public int GetId()
+        public int GetModelId()
         {
             uint vehicle = 0;
             int id = -1;
