@@ -9,6 +9,40 @@ namespace shadowAPI2
     public class Vehicle
     {
         private static Vehicle instance;
+        private string[] vehicleNames = {
+                                            "Landstalker","Bravura","Buffalo","Linerunner","Perrenial","Sentinel",
+                                            "Dumper","Firetruck","Trashmaster","Stretch","Manana","Infernus",
+                                            "Voodoo","Pony","Mule","Cheetah","Ambulance","Leviathan","Moonbeam",
+                                            "Esperanto","Taxi","Washington","Bobcat","Whoopee","BF Injection",
+                                            "Hunter","Premier","Enforcer","Securicar","Banshee","Predator","Bus",
+                                            "Rhino","Barracks","Hotknife","Trailer","Previon","Coach","Cabbie",
+                                            "Stallion","Rumpo","RC Bandit","Romero","Packer","Monster","Admiral",
+                                            "Squalo","Seasparrow","Pizzaboy","Tram","Trailer","Turismo","Speeder",
+                                            "Reefer", "Tropic", "Flatbed", "Yankee", "Caddy", "Solair", "Berkley's RC Van",
+                                            "Skimmer", "PCJ-600", "Faggio", "Freeway", "RC Baron", "RC Raider", "Glendale",
+                                            "Oceanic","Sanchez", "Sparrow", "Patriot", "Quad", "Coastguard", "Dinghy",
+                                            "Hermes", "Sabre", "Rustler", "ZR-350", "Walton", "Regina", "Comet", "BMX",
+                                            "Burrito", "Camper", "Marquis", "Baggage", "Dozer", "Maverick", "News Chopper",
+                                            "Rancher", "FBI Rancher", "Virgo", "Greenwood", "Jetmax", "Hotring", "Sandking",
+                                            "Blista Compact", "Police Maverick", "Boxvillde", "Benson", "Mesa", "RC Goblin",
+                                            "Hotring Racer A", "Hotring Racer B", "Bloodring Banger", "Rancher", "Super GT",
+                                            "Elegant", "Journey", "Bike", "Mountain Bike", "Beagle", "Cropduster", "Stunt",
+                                            "Tanker", "Roadtrain", "Nebula", "Majestic", "Buccaneer", "Shamal", "hydra",
+                                            "FCR-900", "NRG-500", "HPV1000", "Cement Truck", "Tow Truck", "Fortune",
+                                            "Cadrona", "FBI Truck", "Willard", "Forklift", "Tractor", "Combine", "Feltzer",
+                                            "Remington", "Slamvan", "Blade", "Freight", "Streak", "Vortex", "Vincent",
+                                            "Bullet", "Clover", "Sadler", "Firetruck", "Hustler", "Intruder", "Primo",
+                                            "Cargobob", "Tampa", "Sunrise", "Merit", "Utility", "Nevada", "Yosemite",
+                                            "Windsor", "Monster", "Monster", "Uranus", "Jester", "Sultan", "Stratum",
+                                            "Elegy", "Raindance", "RC Tiger", "Flash", "Tahoma", "Savanna", "Bandito",
+                                            "Freight Flat", "Streak Carriage", "Kart", "Mower", "Dune", "Sweeper",
+                                            "Broadway","Tornado","AT-400","DFT-30","Huntley","Stafford","BF-400",
+                                            "News Van","Tug","Trailer","Emperor","Wayfarer","Euros","Hotdog","Club",
+                                            "Freight Box","Trailer","Andromada","Dodo","RC Cam","Launch","Police Car",
+                                            "Police Car","Police Car","Police Ranger","Picador","S.W.A.T","Alpha",
+                                            "Phoenix","Glendale Shit","Sadler Shit","Luggage","Luggage","Stairs","Boxville",
+                                            "Tiller","Utility Trailer"
+                                            };
 
         private Vehicle()
         {
@@ -165,6 +199,41 @@ namespace shadowAPI2
             }
 
             return enabled;
+        }
+
+        /// <summary>
+        /// Get the vehicle model name of the current vehicle
+        /// </summary>
+        /// <returns>Model name</returns>
+        public string GetModelName()
+        {
+            uint vehicle = 0;
+            string vehicleMame = "";
+            if ((vehicle = IsInVehicle()) != 0)
+            {
+                int modelid = GetModelId();
+                if (modelid > 400 && modelid < 611)
+                {
+                    vehicleMame = vehicleNames[modelid - 400];
+                }
+            }
+            return vehicleMame;
+        }
+
+        /// <summary>
+        /// Get the 
+        /// </summary>
+        /// <param name="modelId"></param>
+        /// <returns></returns>
+        public string GetModelNameByModelId(int modelId)
+        {
+            string vehicleName = "";
+            if (modelId > 400 && modelId < 611)
+            {
+                vehicleName = vehicleNames[modelId - 400];
+            }
+
+            return vehicleName;
         }
     }
 }
