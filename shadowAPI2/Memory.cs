@@ -42,6 +42,11 @@ namespace shadowAPI2
         private static IntPtr[] parameterMemory = new IntPtr[RESERVE];
 
         // Read addresses
+        #region SAMP specific and used for more classes
+        private static uint structSampOffset = 0x212A80;
+        private static uint structPlayersPoolOffset = 0x3D9;
+        private static uint structPlayersOffset = 0x14;
+        #endregion
         #region Need for Player class
         // Player
         private static uint playerOffsetBase = 0xB6F5F0;
@@ -71,12 +76,21 @@ namespace shadowAPI2
         // Location
         private static uint playerOffsetLocation = 0x2F;
         public static uint playerLocation = 0;
+
+        // SAMP informations
+        private static uint playerOffsetName = 0x2123F7;
+        public static uint playerName = 0;
+
+        private static uint playerOffsetId = 0x04;
+        public static uint playerId = 0;
+
+        //public static uint playerNameLength = 
         #endregion
         #region Need for Vehicle class
         // Car
         public static uint vehicleOffsetBase = 0xBA18FC;
 
-        public static uint vehicleOffsetId = 0x22; // TODO
+        public static uint vehicleOffsetModelId = 0x22;
 
         public static uint vehicleOffsetDamage = 0x4C0;
 
@@ -85,6 +99,18 @@ namespace shadowAPI2
         public static uint vehicleOffsetSpeedZ = 0x4C;
 
         public static uint vehicleOffsetCollideStatus = 0xD8;
+
+        public static uint vehicleOffsetLockState = 0x4F8;
+
+        public static uint vehicleOffsetSeats = 0x460; // Address to the pointer of the driver(+0x04 for other passenger pointer)
+
+        public static uint vehicleOffsetEngineState = 0x428;
+
+        private static uint structOffsetLocalPlayer = 0x22;
+        private static uint vehicleOffsetId = 0x8;
+
+        public static uint vehicleId = 0;
+
         #endregion
         #region Need for Statistic class
         // Stats
@@ -113,18 +139,14 @@ namespace shadowAPI2
         public static uint isDialogOpen = 0;
         #endregion
         #region Need for RemotePlayer class
-        // Scoreboard
-        private static uint structSampOffset = 0x212A80;
-        private static uint structPlayersPoolOffset = 0x3D9;
-        private static uint structPlayersOffset = 0x14;
         public static uint structRemotePlayersOffset = 0x2E;
         public static uint structRemotePlayersDataOffset = 0x08;
         public static uint remotePlayerStringLengthOffset = 0x24;
         public static uint remotePlayerUsernameOffset = 0x14;
 
         private static uint structSamp = 0;
-        private static uint structPlayersPool = 0;
-        public static uint structPlayers = 0;
+        private static uint structSampPools = 0;
+        public static uint structPlayerPool = 0;
         #endregion
 
         // Function addresses
@@ -176,6 +198,11 @@ namespace shadowAPI2
 
 
                 // Variables
+                #region SAMP specified
+                structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
+                structSampPools = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
+                structPlayerPool = BitConverter.ToUInt32(ReadMemory(structSampPools + structPlayersOffset, 4), 0);
+                #endregion
                 #region Player
                 // Base of Player
                 playerBase = BitConverter.ToUInt32(ReadMemory(playerOffsetBase, 4), 0);
@@ -193,6 +220,10 @@ namespace shadowAPI2
 
                 // Interior Boolean
                 playerLocation = playerBase + playerOffsetLocation;
+
+                // SAMP informations
+                playerName = sampModule + playerOffsetName;
+                playerId = structPlayerPool + playerOffsetId;
                 #endregion
                 #region Chat
                 // Chat
@@ -207,11 +238,11 @@ namespace shadowAPI2
                 dialog = BitConverter.ToUInt32(ReadMemory((uint)sampModule + dialogOffset, 4), 0);
                 isDialogOpen = dialog + isDialogOpenOffset;
                 #endregion
+                #region Vehicle
+                vehicleId = ReadUInteger(structPlayerPool + structOffsetLocalPlayer) + vehicleOffsetId;
+                #endregion
                 #region Player Infos
-                // Player Infos
-                structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
-                structPlayersPool = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
-                structPlayers = BitConverter.ToUInt32(ReadMemory(structPlayersPool + structPlayersOffset, 4), 0);
+
                 #endregion
                 #region World
                 #endregion
@@ -262,6 +293,15 @@ namespace shadowAPI2
             return result;
         }
 
+        internal static Int16 ReadInteger16(uint address)
+        {
+            byte[] bytes = ReadMemory(address, 2);
+
+            Int16 result = BitConverter.ToInt16(bytes, 0);
+
+            return result;
+        }
+
         internal static uint ReadUInteger(uint address)
         {
             byte[] bytes = ReadMemory(address, 4);
@@ -276,6 +316,15 @@ namespace shadowAPI2
             byte[] bytes = ReadMemory(address, 4);
 
             float result = BitConverter.ToSingle(bytes, 0);
+
+            return result;
+        }
+
+        internal static byte ReadByte(uint address)
+        {
+            byte[] bytes = ReadMemory(address, 1);
+
+            byte result = bytes[0];
 
             return result;
         }
@@ -321,8 +370,8 @@ namespace shadowAPI2
                     isDialogOpen = dialog + isDialogOpenOffset;
 
                     structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
-                    structPlayersPool = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
-                    structPlayers = BitConverter.ToUInt32(ReadMemory(structPlayersPool + structPlayersOffset, 4), 0);
+                    structSampPools = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
+                    structPlayerPool = BitConverter.ToUInt32(ReadMemory(structSampPools + structPlayersOffset, 4), 0);
 
                     ReadProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesReaded);
                 }

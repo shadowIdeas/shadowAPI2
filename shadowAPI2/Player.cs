@@ -25,6 +25,10 @@ namespace shadowAPI2
             return instance;
         }
 
+        /// <summary>
+        /// Get the current health of the player
+        /// </summary>
+        /// <returns>Health</returns>
         public int GetHealth()
         {
             if (!Memory.IsInit)
@@ -35,6 +39,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the current armor of the player
+        /// </summary>
+        /// <returns>Armor</returns>
         public int GetArmor()
         {
             if (!Memory.IsInit)
@@ -45,6 +53,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the current X-Coordinate of the player
+        /// </summary>
+        /// <returns>X-Coordinate</returns>
         public float GetX()
         {
             if (!Memory.IsInit)
@@ -55,6 +67,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the current X-Coordinate of the player
+        /// </summary>
+        /// <returns>X-Coordinate</returns>
         public float GetY()
         {
             if (!Memory.IsInit)
@@ -65,6 +81,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the current X-Coordinate of the player
+        /// </summary>
+        /// <returns>X-Coordinate</returns>
         public float GetZ()
         {
             if (!Memory.IsInit)
@@ -75,6 +95,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the current city of the player
+        /// </summary>
+        /// <returns>City</returns>
         public string GetCity()
         {
             if (!Memory.IsInit)
@@ -87,6 +111,10 @@ namespace shadowAPI2
             return zoneManager.City(x, y, z);
         }
 
+        /// <summary>
+        /// Get the current zone of the player
+        /// </summary>
+        /// <returns>Zone</returns>
         public string GetPlayerZone()
         {
             if (!Memory.IsInit)
@@ -99,6 +127,10 @@ namespace shadowAPI2
             return zoneManager.Zone(x, y, z);
         }
 
+        /// <summary>
+        /// Check if's the player is in a interior
+        /// </summary>
+        /// <returns>True if it in a interior, false if not</returns>
         public bool IsInInterior()
         {
             if (!Memory.IsInit)
@@ -112,19 +144,31 @@ namespace shadowAPI2
                 return true;
         }
 
+        /// <summary>
+        /// Check if's the player is in a vehicle
+        /// </summary>
+        /// <returns>True if it in a vehicle, false if not</returns>
         public bool IsInVehicle()
         {
             if (!Memory.IsInit)
                 Memory.Init();
 
-            uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.vehicleOffsetBase, 4), 0);
+            bool inVehicle = false;
 
-            if (result == 0)
-                return false;
-            else
-                return true;
+            if (Vehicle.GetInstance().IsInVehicle() != 0)
+                inVehicle = true;
+
+            return inVehicle;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x">The X-Coordinate where check the range</param>
+        /// <param name="y">The Y-Coordinate where check the range</param>
+        /// <param name="z">The Z-Coordinate where check the range</param>
+        /// <param name="radius">The radius of the point</param>
+        /// <returns></returns>
         public bool IsInRangeOf(float x, float y, float z, float radius)
         {
             x = GetX() - x;
@@ -135,6 +179,38 @@ namespace shadowAPI2
                 return true;
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Get the SAMP id of the player
+        /// </summary>
+        /// <returns>SAMP id</returns>
+        public int GetId()
+        {
+            if (!Memory.IsInit)
+                Memory.Init();
+
+            int id = -1;
+
+            id = Memory.ReadInteger16(Memory.playerId);
+
+            return id;
+        }
+
+        /// <summary>
+        /// Get the current SAMP name of the player
+        /// </summary>
+        /// <returns>SAMP name</returns>
+        public string GetName()
+        {
+            if (!Memory.IsInit)
+                Memory.Init();
+
+            string name = "";
+
+            name = Memory.ReadString(Memory.playerName, 25).Replace("\0", "");
+
+            return name;
         }
     }
 }

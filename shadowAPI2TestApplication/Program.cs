@@ -20,7 +20,8 @@ namespace shadowAPI2TestApplication
             System.Threading.Thread.Sleep(5000);
 
             Console.WriteLine("Sending Test-Message (UTF-8 Symbols included)...");
-            shadowAPI2.Chat.GetInstance().Send("UTF8: äüéö <= Gehts? :>");            
+            shadowAPI2.Chat.GetInstance().Send("UTF8: äüéö <= Gehts? :>");
+            shadowAPI2.Chat.GetInstance().AddMessage("My ID: " + shadowAPI2.Player.GetInstance().GetId());
 
             int id = -1;
             String name = "";
