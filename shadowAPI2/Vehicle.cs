@@ -87,7 +87,7 @@ namespace shadowAPI2
         }
 
         /// <summary>
-        /// Get the id of the current vehicle
+        /// Get the model id of the current vehicle
         /// </summary>
         /// <returns>Id</returns>
         public int GetId()
@@ -96,7 +96,7 @@ namespace shadowAPI2
             int id = -1;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                id = Memory.ReadInteger16(Memory.vehicleId);
+                id = Memory.ReadInteger16(vehicle + Memory.vehicleOffsetModelId);
             }
 
             return id;
@@ -112,7 +112,7 @@ namespace shadowAPI2
             int id = -1;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                id = Memory.ReadInteger(vehicle + Memory.vehicleOffsetModelId);
+                id = Memory.ReadInteger16(Memory.vehicleId);
             }
 
             return id;
