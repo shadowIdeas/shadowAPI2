@@ -49,9 +49,9 @@ namespace shadowAPI2
                 }
                 if (lastline == "")
                     return;
-                String[] splitted = lastline.Split(' ');
+                List<String> splitted = lastline.Split(' ').ToList();
                 DateTime date = DateTime.Parse(splitted[0].Remove(0, 1).Remove(splitted[0].Length - 2));
-                splitted[0] = "";
+                splitted.RemoveAt(0);
                 if (OnChatMessage != null)
                     OnChatMessage(date, string.Join(" ", splitted));
             }
