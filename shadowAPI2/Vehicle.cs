@@ -111,13 +111,15 @@ namespace shadowAPI2
         public bool IsVehicleLocked()
         {
             uint vehicle = 0;
-            bool state = false;
+            bool locked = false;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                state = Memory.ReadBoolean(vehicle + Memory.vehicleOffsetLockState);
+                int state = Memory.ReadInteger(vehicle + Memory.vehicleOffsetLockState);
+                if (state == 2)
+                    locked = true;
             }
 
-            return state;
+            return locked;
         }
 
         /// <summary>
@@ -194,7 +196,8 @@ namespace shadowAPI2
             bool enabled = false;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                if (Memory.ReadByte(vehicle + Memory.vehicleOffsetEngineState) == 24)
+                byte state = Memory.ReadByte(vehicle + Memory.vehicleOffsetEngineState);
+                if (state == 24 || state == 56 || state == 88 || state == 120)
                     enabled = true;
             }
 
