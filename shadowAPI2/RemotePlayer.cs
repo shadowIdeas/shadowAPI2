@@ -26,6 +26,12 @@ namespace shadowAPI2
             return instance;
         }
 
+        /// <summary>
+        /// Get the id of the player by there name
+        /// </summary>
+        /// <param name="player">The name of the querried player</param>
+        /// <param name="reloadData">Get the current data if it's true</param>
+        /// <returns></returns>
         public int GetPlayerIdByName(string player, bool reloadData = true)
         {
             if (!Memory.IsInit)
@@ -79,6 +85,12 @@ namespace shadowAPI2
             return id;
         }
 
+        /// <summary>
+        /// Get the id's of player by there names
+        /// </summary>
+        /// <param name="player">Array of string with the player names</param>
+        /// <param name="reloadData">Get the current data if it's true</param>
+        /// <returns></returns>
         public int[] GetPlayerIdByName(string[] player, bool reloadData = true)
         {
             if (!Memory.IsInit)
@@ -148,6 +160,12 @@ namespace shadowAPI2
             return id;
         }
 
+        /// <summary>
+        /// Get the player name by there id
+        /// </summary>
+        /// <param name="id">Id to querried</param>
+        /// <param name="reloadId">Reload the querried id if it's true</param>
+        /// <returns></returns>
         public string GetPlayerNameById(uint id, bool reloadId = true)
         {
             if (!Memory.IsInit)
@@ -192,6 +210,12 @@ namespace shadowAPI2
             return name;
         }
 
+        /// <summary>
+        /// Get player names by there id's
+        /// </summary>
+        /// <param name="id">Array of uint, with the id's of the players</param>
+        /// <param name="reloadId">Reload all id's if it's true</param>
+        /// <returns></returns>
         public string[] GetPlayerNameById(uint[] id, bool reloadId = true)
         {
             if (!Memory.IsInit)
@@ -237,6 +261,12 @@ namespace shadowAPI2
             return name;
         }
 
+        /// <summary>
+        /// Get the player score by the player id
+        /// </summary>
+        /// <param name="id">Id to be querried</param>
+        /// <param name="reloadId">Reload the player with the 'id' parameter if it's true</param>
+        /// <returns></returns>
         public int GetPlayerScoreById(uint id, bool reloadId = true)
         {
             if (!Memory.IsInit)
@@ -263,6 +293,12 @@ namespace shadowAPI2
             return score;
         }
 
+        /// <summary>
+        /// Check if the player is connected
+        /// </summary>
+        /// <param name="player">A string with the player name</param>
+        /// <param name="reloadData">Get the current data if it's true</param>
+        /// <returns></returns>
         public bool IsPlayerConnected(string player, bool reloadData = true)
         {
             if (!Memory.IsInit)
@@ -306,6 +342,12 @@ namespace shadowAPI2
             return false;
         }
 
+        /// <summary>
+        /// Check if the players are connected
+        /// </summary>
+        /// <param name="player">A Array of string with the player names</param>
+        /// <param name="reloadData">Get the current data if it's true</param>
+        /// <returns></returns>
         public bool[] IsPlayerConnected(string[] player, bool reloadData = true)
         {
             if (!Memory.IsInit)

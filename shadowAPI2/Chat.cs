@@ -24,6 +24,10 @@ namespace shadowAPI2
             return instance;
         }
 
+        /// <summary>
+        /// Check if the chat is open
+        /// </summary>
+        /// <returns>True if its open, else false</returns>
         public bool IsOpen()
         {
             if (!Memory.IsInit)
@@ -34,6 +38,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Check if a dialog is open
+        /// </summary>
+        /// <returns>True if its open, else false</returns>
         public bool IsDialogOpen()
         {
             if (!Memory.IsInit)
@@ -44,6 +52,11 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Send a message/command to the server
+        /// </summary>
+        /// <param name="message">The message/command</param>
+        /// <param name="state">Don't used</param>
         public void Send(string message, int state = 0)
         {
             if (!Memory.IsInit)
@@ -72,6 +85,11 @@ namespace shadowAPI2
             }
         }
 
+        /// <summary>
+        /// Add a new message in the SAMP chat (only local)
+        /// </summary>
+        /// <param name="text">The text to be written</param>
+        /// <param name="color">A color in Hex</param>
         public void AddMessage(string text, string color = "FFFFFF")
         {
             if (!Memory.IsInit)
@@ -80,6 +98,11 @@ namespace shadowAPI2
             Memory.Call(Memory.functionAddChatMessage, new object[] {(int)Memory.chatMessage, "{" + color + "}" + text }, true);
         }
 
+        /// <summary>
+        /// Add a new message in the SAMP chat (only local)
+        /// </summary>
+        /// <param name="text">The text to be written</param>
+        /// <param name="color">A Color-Type</param>
         public void AddMessage(string text, Color color)
         {
             if (!Memory.IsInit)

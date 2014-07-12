@@ -23,6 +23,10 @@ namespace shadowAPI2
             return instance;
         }
 
+        /// <summary>
+        /// Get the runned meters
+        /// </summary>
+        /// <returns>Meters</returns>
         public float GetFeetMeters()
         {
             if (!Memory.IsInit)
@@ -33,6 +37,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the drive meters with normal vehicles
+        /// </summary>
+        /// <returns>Meters</returns>
         public float GetVehicleMeters()
         {
             if (!Memory.IsInit)
@@ -43,6 +51,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the drive meters with bikes
+        /// </summary>
+        /// <returns>Meters</returns>
         public float GetBikeMeters()
         {
             if (!Memory.IsInit)
@@ -53,6 +65,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the flown meters
+        /// </summary>
+        /// <returns>Meters</returns>
         public float GetHelicopterMeters()
         {
             if (!Memory.IsInit)
@@ -63,6 +79,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the drive meters with ships
+        /// </summary>
+        /// <returns>Meters</returns>
         public float GetShipMeters()
         {
             if (!Memory.IsInit)
@@ -73,6 +93,10 @@ namespace shadowAPI2
             return result;
         }
 
+        /// <summary>
+        /// Get the swimmed meters
+        /// </summary>
+        /// <returns>Meters</returns>
         public float GetSwimMeters()
         {
             if (!Memory.IsInit)
