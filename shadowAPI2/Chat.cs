@@ -12,8 +12,8 @@ namespace shadowAPI2
     {
         private static Chat instance;
         private FileSystemWatcher watcher;
-        private String ChatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
-        private String ChatlogFile = "chatlog.txt";
+        private string chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
+        private const string CHATLOG_FILE = "chatlog.txt";
 
         /// <summary>
         /// Chat-Message delegate
@@ -30,14 +30,15 @@ namespace shadowAPI2
         private Chat()
         {
             FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = ChatlogPath;
-            watcher.Filter = ChatlogFile;
+            watcher.Path = chatlogPath;
+            watcher.Filter = CHATLOG_FILE;
             watcher.Changed += ChangeReceived;
             watcher.EnableRaisingEvents = true;
         }
+
         internal void ChangeReceived(object ob, FileSystemEventArgs e)
         {
-            using (StreamReader reader = new StreamReader(new FileStream(Path.Combine(ChatlogPath, ChatlogFile), FileMode.Open, FileAccess.Read)))
+            using (StreamReader reader = new StreamReader(new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read)))
             {
                 String line = "";
                 String lastline = "";
