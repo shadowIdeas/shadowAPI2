@@ -10,18 +10,24 @@ namespace shadowAPI2TestApplication
 {
     class Program
     {
+        private static shadowAPI2.Chat chat = shadowAPI2.Chat.GetInstance();
+        private static shadowAPI2.Player player = shadowAPI2.Player.GetInstance();
+        private static shadowAPI2.RemotePlayer remotePlayer = shadowAPI2.RemotePlayer.GetInstance();
         static void Main(string[] args)
         {
+            shadowAPI2.API.Init(); // Don't needed
+
+            chat.OnChatMessage += OnChatMessage;
+
             Console.WriteLine("Test Application started, press ENTER to start the test");
             Console.ReadLine();
-            shadowAPI2.API.Init();
 
             Console.WriteLine("Waiting 5 Seconds...");
             System.Threading.Thread.Sleep(5000);
 
             Console.WriteLine("Sending Test-Message (UTF-8 Symbols included)...");
-            shadowAPI2.Chat.GetInstance().Send("UTF8: äüéö <= Gehts? :>");
-            shadowAPI2.Chat.GetInstance().AddMessage("My ID: " + shadowAPI2.Player.GetInstance().GetId());
+            chat.Send("This is a test with UTF-8 symbols (üäöéú)");
+            chat.AddMessage("My ID: " + player.GetId());
 
             int id = -1;
             String name = "";
@@ -29,24 +35,27 @@ namespace shadowAPI2TestApplication
             {
                 Console.Write("Which player-name should be queried: ");
                 name = Console.ReadLine();
-                id = shadowAPI2.RemotePlayer.GetInstance().GetPlayerIdByName(name, true);
+                id = remotePlayer.GetPlayerIdByName(name, true);
                 if (id == -1)
                     Console.WriteLine("Player '" + name + "' not found");
             }
             Console.WriteLine("Player '" + name + "' has the ID: " + id);
 
-            Console.WriteLine("Testing AddChatMessage...");
-            shadowAPI2.Chat.GetInstance().AddMessage("ID von " + name + ": " + id, Color.Yellow);
-            shadowAPI2.Chat.GetInstance().AddMessage("Name von ID " + id + ": " + shadowAPI2.RemotePlayer.GetInstance().GetPlayerNameById((uint)id), Color.Turquoise);
+            Console.WriteLine("Testing AddMessage...");
+            chat.AddMessage("ID of " + name + ": " + id, Color.Yellow);
+            chat.AddMessage("Name of ID " + id + ": " + remotePlayer.GetPlayerNameById((uint)id), Color.Turquoise);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Test completed [You can go into SA:MP and check your Chat-Messages]");
             Console.ReadLine();
+        }
 
-            //Old
-            //shadowAPI2.Chat.SendChat("/b Test");
-            //shadowAPI2.Chat.SendChat("/b Test", 2);
-            //shadowAPI2.Chat.SendChat("Test");
+        private static void OnChatMessage(DateTime time, string message)
+        {
+            if(message.EndsWith("shadowAPI2"))
+            {
+                chat.AddMessage("Anyone written 'shadowAPI2'!");
+            }
         }
     }
 }
