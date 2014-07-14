@@ -32,6 +32,7 @@ namespace shadowAPI2
 
         // GTA and more
         private static uint pid = 0;
+        private static Process gtaProcess;
         public static IntPtr handle = IntPtr.Zero;
         private static uint sampModule = 0;
         private static uint gtaModule = 0;
@@ -163,27 +164,25 @@ namespace shadowAPI2
 
         internal static void Init()
         {
-            if (!isInit)
+            Process[] processes = Process.GetProcessesByName("rgn_ac_gta");
+            if(processes.Length > 0 && !isInit)
             {
-                Process[] processes = Process.GetProcessesByName("rgn_ac_gta");
-                if (processes.Length > 0)
+                gtaProcess = processes[0];
+                gtaProcess.Exited += OnGtaExited;
+
+                pid = (uint)processes[0].Id;
+                ProcessModuleCollection modules = processes[0].Modules;
+                foreach (ProcessModule item in modules)
                 {
-                    pid = (uint)processes[0].Id;
-                    ProcessModuleCollection modules = processes[0].Modules;
-                    foreach (ProcessModule item in modules)
+                    if (item.ModuleName == "samp.dll")
                     {
-                        if (item.ModuleName == "samp.dll")
-                        {
-                            sampModule = (uint)item.BaseAddress;
-                        }
-                        else if (item.ModuleName == "rgn_ac_gta.exe")
-                        {
-                            gtaModule = (uint)item.BaseAddress;
-                        }
+                        sampModule = (uint)item.BaseAddress;
+                    }
+                    else if (item.ModuleName == "rgn_ac_gta.exe")
+                    {
+                        gtaModule = (uint)item.BaseAddress;
                     }
                 }
-                else
-                    return;
 
                 handle = OpenProcess(0x1F0FFF, 1, pid);
 
@@ -196,74 +195,88 @@ namespace shadowAPI2
                     parameterMemory[i] = allocMemory + (1024 * i);
                 }
 
-
-                // Variables
-                #region SAMP specified
-                structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
-                structSampPools = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
-                structPlayerPool = BitConverter.ToUInt32(ReadMemory(structSampPools + structPlayersOffset, 4), 0);
-                #endregion
-                #region Player
-                // Base of Player
-                playerBase = BitConverter.ToUInt32(ReadMemory(playerOffsetBase, 4), 0);
-
-                // HP
-                playerHealth = playerBase + playerOffsetHealth;
-                playerArmor = playerBase + playerOffsetArmor;
-
-                // Position
-                playerPosition = BitConverter.ToUInt32(ReadMemory(playerBase + playerOffsetMatrix, 4), 0);
-                playerPositionRotation = playerPosition + playerOffsetPositionRotation;
-                playerPositionX = playerPosition + playerOffsetPositionX;
-                playerPositionY = playerPosition + playerOffsetPositionY;
-                playerPositionZ = playerPosition + playerOffsetPositionZ;
-
-                // Interior Boolean
-                playerLocation = playerBase + playerOffsetLocation;
-
-                // SAMP informations
-                playerName = sampModule + playerOffsetName;
-                playerId = structPlayerPool + playerOffsetId;
-                #endregion
-                #region Chat
-                // Chat
-                while ((chatMessage = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatMessageOffset, 4), 0)) == 0)
-                    System.Threading.Thread.Sleep(100);
-                while ((chat = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatOffset, 4), 0)) == 0)
-                    System.Threading.Thread.Sleep(100);
-                isChatOpen = chat + isChatOpenOffset;
-                #endregion
-                #region Dialog
-                // Dialog
-                dialog = BitConverter.ToUInt32(ReadMemory((uint)sampModule + dialogOffset, 4), 0);
-                isDialogOpen = dialog + isDialogOpenOffset;
-                #endregion
-                #region Vehicle
-                vehicleId = ReadUInteger(structPlayerPool + structOffsetLocalPlayer) + vehicleOffsetId;
-                #endregion
-                #region Player Infos
-
-                #endregion
-                #region World
-                #endregion
-
-                // Functions
-                #region Chat functions
-                functionSendSay = sampModule + functionSendSayOffset;
-                functionSendCommand = sampModule + functionSendCommandOffset;
-                functionAddChatMessage = sampModule + functionAddChatMessageOffset;
-                #endregion
+                InitVariables();
 
                 isInit = true;
             }
         }
 
-        internal static void ReInit()
+        private static void InitVariables()
         {
-            isInit = false;
-            CloseHandle(handle);
-            handle = IntPtr.Zero;
-            sampModule = 0;
+            // Variables
+            #region SAMP specified
+            structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
+            structSampPools = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
+            structPlayerPool = BitConverter.ToUInt32(ReadMemory(structSampPools + structPlayersOffset, 4), 0);
+            #endregion
+            #region Player
+            // Base of Player
+            playerBase = BitConverter.ToUInt32(ReadMemory(playerOffsetBase, 4), 0);
+
+            // HP
+            playerHealth = playerBase + playerOffsetHealth;
+            playerArmor = playerBase + playerOffsetArmor;
+
+            // Position
+            playerPosition = BitConverter.ToUInt32(ReadMemory(playerBase + playerOffsetMatrix, 4), 0);
+            playerPositionRotation = playerPosition + playerOffsetPositionRotation;
+            playerPositionX = playerPosition + playerOffsetPositionX;
+            playerPositionY = playerPosition + playerOffsetPositionY;
+            playerPositionZ = playerPosition + playerOffsetPositionZ;
+
+            // Interior Boolean
+            playerLocation = playerBase + playerOffsetLocation;
+
+            // SAMP informations
+            playerName = sampModule + playerOffsetName;
+            playerId = structPlayerPool + playerOffsetId;
+            #endregion
+            #region Chat
+            // Chat
+            while ((chatMessage = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatMessageOffset, 4), 0)) == 0)
+                System.Threading.Thread.Sleep(100);
+            while ((chat = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatOffset, 4), 0)) == 0)
+                System.Threading.Thread.Sleep(100);
+            isChatOpen = chat + isChatOpenOffset;
+            #endregion
+            #region Dialog
+            // Dialog
+            dialog = BitConverter.ToUInt32(ReadMemory((uint)sampModule + dialogOffset, 4), 0);
+            isDialogOpen = dialog + isDialogOpenOffset;
+            #endregion
+            #region Vehicle
+            vehicleId = ReadUInteger(structPlayerPool + structOffsetLocalPlayer) + vehicleOffsetId;
+            #endregion
+            #region Player Infos
+
+            #endregion
+            #region World
+            #endregion
+
+            // Functions
+            #region Chat functions
+            functionSendSay = sampModule + functionSendSayOffset;
+            functionSendCommand = sampModule + functionSendCommandOffset;
+            functionAddChatMessage = sampModule + functionAddChatMessageOffset;
+            #endregion
+        }
+
+        internal static void UnInit()
+        {
+            if(!isInit && handle != IntPtr.Zero)
+            {
+                Process[] processes = Process.GetProcessesByName("rgn_ac_gta");
+                if(processes.Length > 0 && processes[0].Id == pid)
+                {
+                    CloseHandle(handle);
+                }
+
+                isInit = false;
+                pid = 0;
+                handle = IntPtr.Zero;
+                sampModule = 0;
+                gtaModule = 0;
+            }
         }
 
         internal static bool ReadBoolean(uint address)
@@ -340,7 +353,7 @@ namespace shadowAPI2
                 int debug = Marshal.GetLastWin32Error();
                 if (debug == 6)
                 {
-                    ReInit();
+                    UnInit();
                     Init();
                     return bytes;
                 }
@@ -349,29 +362,7 @@ namespace shadowAPI2
                     CloseHandle(handle);
                     handle = OpenProcess(0x1F0FFF, 1, pid);
 
-                    playerBase = BitConverter.ToUInt32(ReadMemory(playerOffsetBase, 4), 0);
-
-                    playerHealth = playerBase + playerOffsetHealth;
-                    playerArmor = playerBase + playerOffsetArmor;
-
-                    playerPosition = BitConverter.ToUInt32(ReadMemory(playerBase + playerOffsetMatrix, 4), 0);
-                    playerPositionRotation = playerPosition + playerOffsetPositionRotation;
-                    playerPositionX = playerPosition + playerOffsetPositionX;
-                    playerPositionY = playerPosition + playerOffsetPositionY;
-                    playerPositionZ = playerPosition + playerOffsetPositionZ;
-
-                    playerLocation = playerBase + playerOffsetLocation;
-
-                    while ((chat = BitConverter.ToUInt32(ReadMemory((uint)sampModule + chatOffset, 4), 0)) == 0)
-                        System.Threading.Thread.Sleep(100);
-                    isChatOpen = chat + isChatOpenOffset;
-
-                    dialog = BitConverter.ToUInt32(ReadMemory((uint)sampModule + dialogOffset, 4), 0);
-                    isDialogOpen = dialog + isDialogOpenOffset;
-
-                    structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + structSampOffset, 4), 0);
-                    structSampPools = BitConverter.ToUInt32(ReadMemory(structSamp + structPlayersPoolOffset, 4), 0);
-                    structPlayerPool = BitConverter.ToUInt32(ReadMemory(structSampPools + structPlayersOffset, 4), 0);
+                    InitVariables();
 
                     ReadProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesReaded);
                 }
@@ -472,6 +463,12 @@ namespace shadowAPI2
 
             IntPtr thread = CreateRemoteThread(handle, IntPtr.Zero, 0, (uint)parameterMemory[parameterMemory.Length - 1], IntPtr.Zero, 0, IntPtr.Zero);
             WaitForSingleObject(thread, 0xFFFFFFFF);
+        }
+
+
+        private static void OnGtaExited(object sender, EventArgs e)
+        {
+            isInit = false;
         }
 
 
