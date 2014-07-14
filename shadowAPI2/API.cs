@@ -8,14 +8,20 @@ namespace shadowAPI2
 {
     public static class API
     {
+        /// <summary>
+        /// Initialize manually the API
+        /// </summary>
         public static void Init()
         {
             Memory.Init();
         }
 
-        public static void ReInit()
+        /// <summary>
+        /// Uninitialize manually the API 
+        /// </summary>
+        public static void UnInit()
         {
-            Memory.ReInit();
+            Memory.UnInit();
         }
     }
 }
