@@ -12,9 +12,14 @@ namespace shadowAPI2
     public class Chat
     {
         private static Chat instance;
+
         private FileSystemWatcher watcher;
-        private string chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
+        private StreamReader reader;
+        private FileInfo info;
+
         private const string CHATLOG_FILE = "chatlog.txt";
+        private string chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
+        private long lastSize;
 
         /// <summary>
         /// Chat-Message delegate
@@ -28,47 +33,45 @@ namespace shadowAPI2
         /// </summary>
         public event OnChatMessageReceived OnChatMessage;
 
-        public String last_message;
-        public long last_size;
-        FileStream stream;
-        StreamReader reader;
         private Chat()
         {
-            FileSystemWatcher watcher = new FileSystemWatcher();
+            reader = new StreamReader(new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Encoding.Default, true);
+            reader.ReadToEnd();
+
+            info = new FileInfo(Path.Combine(chatlogPath, CHATLOG_FILE));
+
+            watcher = new FileSystemWatcher();
             watcher.Path = chatlogPath;
             watcher.Filter = CHATLOG_FILE;
             watcher.Changed += ChangeReceived;
             watcher.EnableRaisingEvents = true;
-
-            stream = new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            reader = new StreamReader(stream,Encoding.Default,true);
         }
 
         internal void ChangeReceived(object ob, FileSystemEventArgs e)
         {
-            FileInfo info = new FileInfo(Path.Combine(chatlogPath,CHATLOG_FILE));
-            if(info.Length < stream.Position)
+            info.Refresh();
+            if (info.Length < reader.BaseStream.Position)
             {
-                stream.Position = 0;
+                reader.BaseStream.Position = 0;
                 reader.DiscardBufferedData();
             }
             String line = "";
             while (!reader.EndOfStream)
             {
                 line = reader.ReadLine();
-                if (line == "" || line == last_message)
+                if (line == "")
                     continue;
                 else
                 {
-                    last_message = line;
                     List<String> splitted = line.Split(' ').ToList();
                     DateTime date = DateTime.Parse(splitted[0].Remove(0, 1).Remove(splitted[0].Length - 2));
                     splitted.RemoveAt(0);
                     if (OnChatMessage != null)
                         OnChatMessage(date, string.Join(" ", splitted));
                 }
-            }            
+            }
         }
+
         public void Close()
         {
 
