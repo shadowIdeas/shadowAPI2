@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
+using System.Security.AccessControl;
 
 namespace shadowAPI2
 {
@@ -27,6 +28,10 @@ namespace shadowAPI2
         /// </summary>
         public event OnChatMessageReceived OnChatMessage;
 
+        public String last_message;
+        public long last_size;
+        FileStream stream;
+        StreamReader reader;
         private Chat()
         {
             FileSystemWatcher watcher = new FileSystemWatcher();
@@ -34,28 +39,39 @@ namespace shadowAPI2
             watcher.Filter = CHATLOG_FILE;
             watcher.Changed += ChangeReceived;
             watcher.EnableRaisingEvents = true;
+
+            stream = new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            reader = new StreamReader(stream,Encoding.Default,true);
         }
 
         internal void ChangeReceived(object ob, FileSystemEventArgs e)
         {
-            using (StreamReader reader = new StreamReader(new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read)))
+            FileInfo info = new FileInfo(Path.Combine(chatlogPath,CHATLOG_FILE));
+            if(info.Length < stream.Position)
             {
-                String line = "";
-                String lastline = "";
-                while (!reader.EndOfStream)
-                {
-                    line = reader.ReadLine();
-                    if (line != "")
-                        lastline = line;
-                }
-                if (lastline == "")
-                    return;
-                List<String> splitted = lastline.Split(' ').ToList();
-                DateTime date = DateTime.Parse(splitted[0].Remove(0, 1).Remove(splitted[0].Length - 2));
-                splitted.RemoveAt(0);
-                if (OnChatMessage != null)
-                    OnChatMessage(date, string.Join(" ", splitted));
+                stream.Position = 0;
+                reader.DiscardBufferedData();
             }
+            String line = "";
+            while (!reader.EndOfStream)
+            {
+                line = reader.ReadLine();
+                if (line == "" || line == last_message)
+                    continue;
+                else
+                {
+                    last_message = line;
+                    List<String> splitted = line.Split(' ').ToList();
+                    DateTime date = DateTime.Parse(splitted[0].Remove(0, 1).Remove(splitted[0].Length - 2));
+                    splitted.RemoveAt(0);
+                    if (OnChatMessage != null)
+                        OnChatMessage(date, string.Join(" ", splitted));
+                }
+            }            
+        }
+        public void Close()
+        {
+
         }
 
         public static Chat GetInstance()
