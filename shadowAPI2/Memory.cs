@@ -346,7 +346,16 @@ namespace shadowAPI2
         {
             byte[] bytes = new byte[size];
             uint bytesReaded = 0;
-            ReadProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesReaded);
+
+            // Cause if GTA is closed
+            try
+            {
+                ReadProcessMemory(handle, (IntPtr)address, bytes, size, ref bytesReaded);
+            }
+            catch (System.StackOverflowException ex)
+            {
+
+            }
 
             if (bytesReaded == 0)
             {
