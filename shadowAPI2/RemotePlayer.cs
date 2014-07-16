@@ -54,29 +54,32 @@ namespace shadowAPI2
                 for (int i = 0; i < 1003; i++)
                 {
                     uint remotePlayer = BitConverter.ToUInt32(Memory.ReadMemory((uint)(Memory.structPlayerPool + Memory.structRemotePlayersOffset + i * 4), 4), 0);
-                    int nameLength = Memory.ReadInteger(remotePlayer + Memory.remotePlayerStringLengthOffset);
-
-                    if (nameLength < 16)
+                    if(remotePlayer != 0)
                     {
-                        string name = Memory.ReadString(remotePlayer + Memory.remotePlayerUsernameOffset, (uint)nameLength);
-                        remotePlayers[i].name = name;
+                        int nameLength = Memory.ReadInteger(remotePlayer + Memory.remotePlayerStringLengthOffset);
 
-                        if (player.ToLower() == name.ToLower())
+                        if (nameLength < 16)
                         {
-                            uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
-                            id = i; // (int)Memory.ReadUInteger(remotePlayerData); // Uint16
+                            string name = Memory.ReadString(remotePlayer + Memory.remotePlayerUsernameOffset, (uint)nameLength);
+                            remotePlayers[i].name = name;
+
+                            if (player.ToLower() == name.ToLower())
+                            {
+                                uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
+                                id = i; // (int)Memory.ReadUInteger(remotePlayerData); // Uint16
+                            }
                         }
-                    }
-                    else
-                    {
-                        uint nameExtension = BitConverter.ToUInt32(Memory.ReadMemory(remotePlayer + Memory.remotePlayerUsernameOffset, 4), 0);
-                        string name = Memory.ReadString(nameExtension, (uint)nameLength);
-                        remotePlayers[i].name = name;
-
-                        if (player.ToLower() == name.ToLower())
+                        else
                         {
-                            uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
-                            id = i; //(int)Memory.ReadUInteger(remotePlayerData); // Uint16
+                            uint nameExtension = BitConverter.ToUInt32(Memory.ReadMemory(remotePlayer + Memory.remotePlayerUsernameOffset, 4), 0);
+                            string name = Memory.ReadString(nameExtension, (uint)nameLength);
+                            remotePlayers[i].name = name;
+
+                            if (player.ToLower() == name.ToLower())
+                            {
+                                uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
+                                id = i; //(int)Memory.ReadUInteger(remotePlayerData); // Uint16
+                            }
                         }
                     }
                 }
