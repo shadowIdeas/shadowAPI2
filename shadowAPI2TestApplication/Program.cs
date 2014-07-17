@@ -40,10 +40,12 @@ namespace shadowAPI2TestApplication
                     Console.WriteLine("Player '" + name + "' not found");
             }
             Console.WriteLine("Player '" + name + "' has the ID: " + id);
+            Console.WriteLine("Score of the player: " + remotePlayer.GetPlayerScoreById((uint)id));
 
             Console.WriteLine("Testing AddMessage...");
             chat.AddMessage("ID of " + name + ": " + id, Color.Yellow);
             chat.AddMessage("Name of ID " + id + ": " + remotePlayer.GetPlayerNameById((uint)id), Color.Turquoise);
+            chat.AddMessage("Score of ID " + id + ": " + remotePlayer.GetPlayerScoreById((uint)id));
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Test completed [You can go into SA:MP and check your Chat-Messages]");
