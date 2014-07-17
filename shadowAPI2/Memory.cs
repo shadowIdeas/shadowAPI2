@@ -142,6 +142,7 @@ namespace shadowAPI2
         #region Need for RemotePlayer class
         public static uint structRemotePlayersOffset = 0x2E;
         public static uint structRemotePlayersDataOffset = 0x08;
+        public static uint remotePlayerScoreOffset = 0x04;
         public static uint remotePlayerStringLengthOffset = 0x24;
         public static uint remotePlayerUsernameOffset = 0x14;
 
