@@ -306,7 +306,10 @@ namespace shadowAPI2
                 uint remotePlayer = Memory.ReadUInteger(Memory.structPlayerPool + Memory.structRemotePlayersOffset + id * 4);
 
                 if(remotePlayer != 0)
+                {
                     score = Memory.ReadInteger(remotePlayer + Memory.remotePlayerScoreOffset);
+                    remotePlayers[id].score = score;
+                }
             }
 
             return score;
