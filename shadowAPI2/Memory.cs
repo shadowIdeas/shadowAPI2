@@ -169,7 +169,7 @@ namespace shadowAPI2
 
         internal static void Init(string processName = "rgn_ac_gta")
         {
-            Process[] processes = Process.GetProcessesByName("gta_sa");
+            Process[] processes = Process.GetProcessesByName(processName);
             if(processes.Length > 0 && !isInit)
             {
                 gtaProcess = processes[0];
