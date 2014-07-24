@@ -54,6 +54,10 @@ namespace shadowAPI2
 
         private static uint playerBase = 0;
 
+        public static uint playerMoney = 0x0B7CE54;
+
+        public static uint playerWeapon = 0x0BAA410;
+
         // Health and armor
         private static uint playerOffsetHealth = 0x540;
         private static uint playerOffsetArmor = 0x548;
@@ -163,9 +167,9 @@ namespace shadowAPI2
         public static uint functionAddChatMessage = 0;
         #endregion
 
-        internal static void Init()
+        internal static void Init(string processName = "rgn_ac_gta")
         {
-            Process[] processes = Process.GetProcessesByName("rgn_ac_gta");
+            Process[] processes = Process.GetProcessesByName("gta_sa");
             if(processes.Length > 0 && !isInit)
             {
                 gtaProcess = processes[0];
@@ -179,7 +183,7 @@ namespace shadowAPI2
                     {
                         sampModule = (uint)item.BaseAddress;
                     }
-                    else if (item.ModuleName == "rgn_ac_gta.exe")
+                    else if (item.ModuleName == processName + ".exe")
                     {
                         gtaModule = (uint)item.BaseAddress;
                     }

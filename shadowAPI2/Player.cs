@@ -212,5 +212,27 @@ namespace shadowAPI2
 
             return name;
         }
+
+        /// <summary>
+        /// Get the current GTA Money what the players has on the hand.
+        /// </summary>
+        /// <returns>GTA Money</returns>
+        public int GetHandCash()
+        {
+            if (!Memory.IsInit)
+                Memory.Init();
+            return Memory.ReadInteger16(Memory.playerMoney);
+        }
+
+        /// <summary>
+        /// Get the weapon ID of the gun the player is holding
+        /// </summary>
+        /// <returns>GTA Weapon ID</returns>
+        public int GetWeaponId()
+        {
+            if (!Memory.IsInit)
+                Memory.Init();
+            return Memory.ReadInteger16(Memory.playerWeapon);
+        }
     }
 }

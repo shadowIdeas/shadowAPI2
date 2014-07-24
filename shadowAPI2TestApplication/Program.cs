@@ -15,7 +15,7 @@ namespace shadowAPI2TestApplication
         private static shadowAPI2.RemotePlayer remotePlayer = shadowAPI2.RemotePlayer.GetInstance();
         static void Main(string[] args)
         {
-            shadowAPI2.API.Init(); // Don't needed
+            shadowAPI2.API.Init("gta_sa");
 
             chat.OnChatMessage += OnChatMessage;
 
@@ -24,7 +24,17 @@ namespace shadowAPI2TestApplication
 
             Console.WriteLine("Waiting 5 Seconds...");
             System.Threading.Thread.Sleep(5000);
+            
+            /*
+            int count = 0;
+            while ( count < 500 )
+            {
+                count ++;
+                chat.AddMessage("Weapon: " + player.GetWeaponId());
+                System.Threading.Thread.Sleep(100);
+            }
 
+            
             Console.WriteLine("Sending Test-Message (UTF-8 Symbols included)...");
             chat.Send("This is a test with UTF-8 symbols (üäöéú)");
             chat.AddMessage("My ID: " + player.GetId());
@@ -48,7 +58,9 @@ namespace shadowAPI2TestApplication
             chat.AddMessage("Score of ID " + id + ": " + remotePlayer.GetPlayerScoreById((uint)id));
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Test completed [You can go into SA:MP and check your Chat-Messages]");
+             * */
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Test completed");
             Console.ReadLine();
         }
 

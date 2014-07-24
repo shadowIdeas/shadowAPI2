@@ -11,9 +11,9 @@ namespace shadowAPI2
         /// <summary>
         /// Initialize manually the API
         /// </summary>
-        public static void Init()
+        public static void Init(string processName = "rgn_ac_gta")
         {
-            Memory.Init();
+            Memory.Init(processName);
         }
 
         /// <summary>
