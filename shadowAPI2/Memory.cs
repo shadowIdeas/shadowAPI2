@@ -37,6 +37,7 @@ namespace shadowAPI2
         private static uint sampModule = 0;
         private static uint gtaModule = 0;
 
+        public static string _processName = "rgn_ac_gta";
         private static bool isInit = false;
 
         private static IntPtr allocMemory = IntPtr.Zero;
@@ -169,7 +170,9 @@ namespace shadowAPI2
 
         internal static void Init(string processName = "rgn_ac_gta")
         {
-            Process[] processes = Process.GetProcessesByName(processName);
+            _processName = processName;
+
+            Process[] processes = Process.GetProcessesByName(_processName);
             if(processes.Length > 0 && !isInit)
             {
                 gtaProcess = processes[0];
@@ -183,7 +186,7 @@ namespace shadowAPI2
                     {
                         sampModule = (uint)item.BaseAddress;
                     }
-                    else if (item.ModuleName == processName + ".exe")
+                    else if (item.ModuleName == _processName + ".exe")
                     {
                         gtaModule = (uint)item.BaseAddress;
                     }

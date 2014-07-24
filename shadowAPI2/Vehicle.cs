@@ -61,7 +61,7 @@ namespace shadowAPI2
         internal uint IsInVehicle() // TODO In Player class?
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.vehicleOffsetBase, 4), 0);
 

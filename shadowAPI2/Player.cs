@@ -32,7 +32,7 @@ namespace shadowAPI2
         public int GetHealth()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             int result = (int)Memory.ReadFloat(Memory.playerHealth);
 
@@ -46,7 +46,7 @@ namespace shadowAPI2
         public int GetArmor()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             int result = (int)Memory.ReadFloat(Memory.playerArmor);
 
@@ -60,7 +60,7 @@ namespace shadowAPI2
         public float GetX()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.playerPositionX);
 
@@ -74,7 +74,7 @@ namespace shadowAPI2
         public float GetY()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.playerPositionY);
 
@@ -88,7 +88,7 @@ namespace shadowAPI2
         public float GetZ()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.playerPositionZ);
 
@@ -102,7 +102,7 @@ namespace shadowAPI2
         public string GetCity()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float x = Memory.ReadFloat(Memory.playerPositionX);
             float y = Memory.ReadFloat(Memory.playerPositionY);
@@ -118,7 +118,7 @@ namespace shadowAPI2
         public string GetZone()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float x = Memory.ReadFloat(Memory.playerPositionX);
             float y = Memory.ReadFloat(Memory.playerPositionY);
@@ -134,7 +134,7 @@ namespace shadowAPI2
         public bool IsInInterior()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             int result = Memory.ReadInteger(Memory.playerLocation);
 
@@ -151,7 +151,7 @@ namespace shadowAPI2
         public bool IsInVehicle()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             bool inVehicle = false;
 
@@ -188,7 +188,7 @@ namespace shadowAPI2
         public int GetId()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             int id = -1;
 
@@ -204,7 +204,7 @@ namespace shadowAPI2
         public string GetName()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             string name = "";
 
@@ -220,7 +220,7 @@ namespace shadowAPI2
         public int GetHandCash()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
             return Memory.ReadInteger16(Memory.playerMoney);
         }
 
@@ -231,7 +231,7 @@ namespace shadowAPI2
         public int GetWeaponId()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
             return Memory.ReadInteger16(Memory.playerWeapon);
         }
     }

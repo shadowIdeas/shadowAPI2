@@ -92,7 +92,7 @@ namespace shadowAPI2
         public bool IsOpen()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             bool result = Memory.ReadBoolean(Memory.isChatOpen);
 
@@ -106,7 +106,7 @@ namespace shadowAPI2
         public bool IsDialogOpen()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             bool result = Memory.ReadBoolean(Memory.isDialogOpen);
 
@@ -121,7 +121,7 @@ namespace shadowAPI2
         public void Send(string message, int state = 0)
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             switch (state)
             {
@@ -154,7 +154,7 @@ namespace shadowAPI2
         public void AddMessage(string text, string color = "FFFFFF")
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + color + "}" + text }, true);
         }
@@ -167,7 +167,7 @@ namespace shadowAPI2
         public void AddMessage(string text, Color color)
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(color) + "}" + text }, true);
         }

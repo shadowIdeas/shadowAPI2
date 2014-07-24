@@ -30,7 +30,7 @@ namespace shadowAPI2
         public float GetFeetMeters()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.statisticFeetMeters);
 
@@ -44,7 +44,7 @@ namespace shadowAPI2
         public float GetVehicleMeters()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.statisticVehicleMeters);
 
@@ -58,7 +58,7 @@ namespace shadowAPI2
         public float GetBikeMeters()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.statisticBikeMeters);
 
@@ -72,7 +72,7 @@ namespace shadowAPI2
         public float GetHelicopterMeters()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.statisticHelicopterMeters);
 
@@ -86,7 +86,7 @@ namespace shadowAPI2
         public float GetShipMeters()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.statisticShipMeters);
 
@@ -100,7 +100,7 @@ namespace shadowAPI2
         public float GetSwimMeters()
         {
             if (!Memory.IsInit)
-                Memory.Init();
+                Memory.Init(Memory._processName);
 
             float result = Memory.ReadFloat(Memory.statisticSwimMeters);
 
