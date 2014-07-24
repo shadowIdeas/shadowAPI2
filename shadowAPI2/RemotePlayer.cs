@@ -34,59 +34,7 @@ namespace shadowAPI2
         /// <returns></returns>
         public int GetPlayerIdByName(string player, bool reloadData = true)
         {
-            if (!Memory.IsInit)
-                Memory.Init();
-
-            int id = -1;
-            if (!reloadData)
-            {
-                for (int i = 0; i < remotePlayers.Length; i++)
-                {
-                    if (remotePlayers[i].name.ToLower() == player.ToLower())
-                    {
-                        id = i;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 1003; i++)
-                {
-                    uint remotePlayer = Memory.ReadUInteger((uint)(Memory.structPlayerPool + Memory.structRemotePlayersOffset + i * 4));
-
-                    if(remotePlayer != 0)
-                    {
-                        int nameLength = Memory.ReadInteger(remotePlayer + Memory.remotePlayerStringLengthOffset);
-
-                        if (nameLength < 16)
-                        {
-                            string name = Memory.ReadString(remotePlayer + Memory.remotePlayerUsernameOffset, (uint)nameLength);
-                            remotePlayers[i].name = name;
-
-                            if (player.ToLower() == name.ToLower())
-                            {
-                                uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
-                                id = i; // (int)Memory.ReadUInteger(remotePlayerData); // Uint16
-                            }
-                        }
-                        else
-                        {
-                            uint nameExtension = Memory.ReadUInteger(remotePlayer + Memory.remotePlayerUsernameOffset);
-                            string name = Memory.ReadString(nameExtension, (uint)nameLength);
-                            remotePlayers[i].name = name;
-
-                            if (player.ToLower() == name.ToLower())
-                            {
-                                uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
-                                id = i; //(int)Memory.ReadUInteger(remotePlayerData); // Uint16
-                            }
-                        }
-                    }
-                }
-            }
-
-            return id;
+            return GetPlayerIdByName(new string[] { player }, reloadData)[0];
         }
 
         /// <summary>
