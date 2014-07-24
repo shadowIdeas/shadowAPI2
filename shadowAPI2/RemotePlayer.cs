@@ -124,50 +124,7 @@ namespace shadowAPI2
         /// <returns></returns>
         public string GetPlayerNameById(uint id, bool reloadId = true)
         {
-            if (!Memory.IsInit)
-                Memory.Init();
-
-            string name = "";
-
-            if (id <= 1003)
-            {
-                if (!reloadId)
-                {
-                    for (int i = 0; i < remotePlayers.Length; i++)
-                    {
-                        if (i == id)
-                        {
-                            name = remotePlayers[i].name;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    uint remotePlayer = BitConverter.ToUInt32(Memory.ReadMemory((uint)(Memory.structPlayerPool + Memory.structRemotePlayersOffset + id * 4), 4), 0);
-
-                    if (remotePlayer != 0)
-                    {
-                        int nameLength = Memory.ReadInteger(remotePlayer + Memory.remotePlayerStringLengthOffset);
-
-                        if (nameLength < 16)
-                        {
-                            name = Memory.ReadString(remotePlayer + Memory.remotePlayerUsernameOffset, (uint)nameLength);
-                            remotePlayers[id].name = name;
-                            remotePlayers[id].id = id;
-                        }
-                        else
-                        {
-                            uint nameExtension = BitConverter.ToUInt32(Memory.ReadMemory(remotePlayer + Memory.remotePlayerUsernameOffset, 4), 0);
-                            name = Memory.ReadString(nameExtension, (uint)nameLength);
-                            remotePlayers[id].name = name;
-                            remotePlayers[id].id = id;
-                        }
-                    }
-                }
-            }
-
-            return name;
+            return GetPlayerNameById(new uint[] { id }, reloadId)[0];
         }
 
         /// <summary>
@@ -271,49 +228,7 @@ namespace shadowAPI2
         /// <returns></returns>
         public bool IsPlayerConnected(string player, bool reloadData = true)
         {
-            if (!Memory.IsInit)
-                Memory.Init();
-
-            if (!reloadData)
-            {
-                for (int i = 0; i < remotePlayers.Length; i++)
-                {
-                    if (remotePlayers[i].name.ToLower() == player.ToLower())
-                        return true;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 1003; i++)
-                {
-                    uint remotePlayer = Memory.ReadUInteger((uint)(Memory.structPlayerPool + Memory.structRemotePlayersOffset + i * 4));
-
-                    if(remotePlayer != 0)
-                    {
-                        int nameLength = Memory.ReadInteger(remotePlayer + Memory.remotePlayerStringLengthOffset);
-
-                        if (nameLength < 16)
-                        {
-                            string name = Memory.ReadString(remotePlayer + Memory.remotePlayerUsernameOffset, (uint)nameLength);
-                            remotePlayers[i].name = name;
-
-                            if (player.ToLower() == name.ToLower())
-                                return true;
-                        }
-                        else
-                        {
-                            uint nameExtension = Memory.ReadUInteger(remotePlayer + Memory.remotePlayerUsernameOffset);
-                            string name = Memory.ReadString(nameExtension, (uint)nameLength);
-                            remotePlayers[i].name = name;
-
-                            if (player.ToLower() == name.ToLower())
-                                return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
+            return IsPlayerConnected(new string[] { player }, reloadData)[0];
         }
 
         /// <summary>
