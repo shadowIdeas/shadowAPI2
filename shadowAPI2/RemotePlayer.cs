@@ -210,6 +210,18 @@ namespace shadowAPI2
             {
                 uint remotePlayer = Memory.ReadUInteger(Memory.structPlayerPool + Memory.structRemotePlayersOffset + id * 4);
 
+                /* UNDONE
+                List<byte> data = new List<byte>();
+
+                data.Add(0xB9);
+                data.AddRange(BitConverter.GetBytes((uint)Memory.structSamp));
+
+                data.Add(0xE8);
+                int offset = (int)address - ((int)Memory.ParameterMemory[Memory.ParameterMemory.Length - 1] + 10);
+
+                data.Add(0xC3);
+                */
+
                 if(remotePlayer != 0)
                 {
                     score = Memory.ReadInteger(remotePlayer + Memory.remotePlayerScoreOffset);
