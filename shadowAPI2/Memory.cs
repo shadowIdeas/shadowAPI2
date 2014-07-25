@@ -151,7 +151,7 @@ namespace shadowAPI2
         public static uint remotePlayerStringLengthOffset = 0x24;
         public static uint remotePlayerUsernameOffset = 0x14;
 
-        private static uint structSamp = 0;
+        public static uint structSamp = 0;
         private static uint structSampPools = 0;
         public static uint structPlayerPool = 0;
         #endregion
@@ -176,6 +176,7 @@ namespace shadowAPI2
             if(processes.Length > 0 && !isInit)
             {
                 gtaProcess = processes[0];
+                gtaProcess.EnableRaisingEvents = true;
                 gtaProcess.Exited += OnGtaExited;
 
                 pid = (uint)processes[0].Id;
