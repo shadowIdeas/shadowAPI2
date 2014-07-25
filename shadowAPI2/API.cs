@@ -9,7 +9,7 @@ namespace shadowAPI2
     public static class API
     {
         /// <summary>
-        /// Initialize manually the API
+        /// Initialize manually the API (only need the first time)
         /// </summary>
         public static void Init(string processName = "rgn_ac_gta")
         {
