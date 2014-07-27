@@ -139,6 +139,32 @@ namespace shadowAPI2
         }
 
         /// <summary>
+        /// Get the model id of the current vehicle
+        /// </summary>
+        /// <returns>Id</returns>
+        public bool IsABike()
+        {
+            uint vehicle = 0;
+            int id = -1;
+            if ((vehicle = IsInVehicle()) != 0)
+            {
+                switch (this.GetModelId())
+                {
+                    case 448: return true;
+                    case 581: return true;
+                    case 522: return true;
+                    case 461: return true;
+                    case 523: return true;
+                    case 463: return true;
+                    case 586: return true;
+                    case 471: return true;
+                    default: return false;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Get the SAMP spawn id of the current vehicle
         /// </summary>
         /// <returns>SAMP spawn id</returns>

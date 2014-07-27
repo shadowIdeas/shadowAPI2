@@ -123,6 +123,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
+            if (message.Length == 0) return;
             switch (state)
             {
                 case 0:

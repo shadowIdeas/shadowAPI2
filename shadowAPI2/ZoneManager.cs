@@ -438,7 +438,7 @@ namespace shadowAPI2
 
         internal string City(float x, float y, float z)
         {
-            string city = "NULL";
+            string city = "Unbekannt";
             for (int i = 0; i < cityName.Count; i++)
             {
                 string name = cityName[i];
@@ -455,7 +455,7 @@ namespace shadowAPI2
 
         internal string Zone(float x, float y, float z)
         {
-            string zone = "NULL";
+            string zone = "Unbekannt";
             for (int i = 0; i < zoneName.Count; i++)
             {
                 string name = zoneName[i];
