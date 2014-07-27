@@ -142,26 +142,27 @@ namespace shadowAPI2
         /// Get the model id of the current vehicle
         /// </summary>
         /// <returns>Id</returns>
-        public bool IsABike()
+        public bool IsBike()
         {
             uint vehicle = 0;
-            int id = -1;
+            bool isBike = false;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                switch (this.GetModelId())
+                switch (GetModelId())
                 {
-                    case 448: return true;
-                    case 581: return true;
-                    case 522: return true;
-                    case 461: return true;
-                    case 523: return true;
-                    case 463: return true;
-                    case 586: return true;
-                    case 471: return true;
-                    default: return false;
+                    case 448:
+                    case 581:
+                    case 522:
+                    case 461:
+                    case 523:
+                    case 463:
+                    case 586:
+                    case 471:
+                        isBike = true;
+                        break;
                 }
             }
-            return false;
+            return isBike;
         }
 
         /// <summary>

@@ -19,7 +19,6 @@ namespace shadowAPI2
 
         private const string CHATLOG_FILE = "chatlog.txt";
         private string chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
-        private long lastSize;
 
         /// <summary>
         /// Chat-Message delegate
@@ -123,27 +122,29 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            if (message.Length == 0) return;
-            switch (state)
+            if (message.Length != 0)
             {
-                case 0:
-                    {
-                        if (message[0] == '/')
+                switch (state)
+                {
+                    case 0:
+                        {
+                            if (message[0] == '/')
+                                Memory.Call(Memory.functionSendCommand, new object[] { message }, false);
+                            else
+                                Memory.Call(Memory.functionSendSay, new object[] { message }, false);
+                        }
+                        break;
+                    case 1:
+                        {
                             Memory.Call(Memory.functionSendCommand, new object[] { message }, false);
-                        else
+                        }
+                        break;
+                    case 2:
+                        {
                             Memory.Call(Memory.functionSendSay, new object[] { message }, false);
-                    }
-                    break;
-                case 1:
-                    {
-                        Memory.Call(Memory.functionSendCommand, new object[] { message }, false);
-                    }
-                    break;
-                case 2:
-                    {
-                        Memory.Call(Memory.functionSendSay, new object[] { message }, false);
-                    }
-                    break;
+                        }
+                        break;
+                }
             }
         }
 
