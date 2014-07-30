@@ -155,7 +155,9 @@ namespace shadowAPI2
         private static uint structSampPools = 0;
         public static uint structPlayerPool = 0;
         #endregion
-
+        #region Need for World class
+        public static uint worldWeather = 0xC81320;
+        #endregion
         // Function addresses
         #region Need for Chat class
         // Chat

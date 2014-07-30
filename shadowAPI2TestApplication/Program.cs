@@ -13,9 +13,10 @@ namespace shadowAPI2TestApplication
         private static shadowAPI2.Chat chat = shadowAPI2.Chat.GetInstance();
         private static shadowAPI2.Player player = shadowAPI2.Player.GetInstance();
         private static shadowAPI2.RemotePlayer remotePlayer = shadowAPI2.RemotePlayer.GetInstance();
+        private static shadowAPI2.World world = shadowAPI2.World.GetInstance();
         static void Main(string[] args)
         {
-            shadowAPI2.API.Init("gta_sa");
+            shadowAPI2.API.Init("rgn_ac_gta");
 
             chat.OnChatMessage += OnChatMessage;
 
@@ -24,17 +25,9 @@ namespace shadowAPI2TestApplication
 
             Console.WriteLine("Waiting 5 Seconds...");
             System.Threading.Thread.Sleep(5000);
-            
-            /*
-            int count = 0;
-            while ( count < 500 )
-            {
-                count ++;
-                chat.AddMessage("Weapon: " + player.GetWeaponId());
-                System.Threading.Thread.Sleep(100);
-            }
 
-            
+            chat.AddMessage("My current Weapon ID are " + player.GetWeaponId());
+
             Console.WriteLine("Sending Test-Message (UTF-8 Symbols included)...");
             chat.Send("This is a test with UTF-8 symbols (üäöéú)");
             chat.AddMessage("My ID: " + player.GetId());
@@ -58,8 +51,6 @@ namespace shadowAPI2TestApplication
             chat.AddMessage("Score of ID " + id + ": " + remotePlayer.GetPlayerScoreById((uint)id));
 
             Console.ForegroundColor = ConsoleColor.Green;
-             * */
-            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Test completed");
             Console.ReadLine();
         }
@@ -69,6 +60,10 @@ namespace shadowAPI2TestApplication
             if(message.EndsWith("shadowAPI2"))
             {
                 chat.AddMessage("Anyone written 'shadowAPI2'!");
+            }
+            else if(message.EndsWith("Say me the weather"))
+            {
+                chat.AddMessage("The current weather is " + world.GetWeather());
             }
         }
     }
