@@ -11,11 +11,18 @@ namespace shadowAPI2
         // TODO Remake of the class (OOP)
         private static RemotePlayer instance;
 
-        private StructureRemotePlayer[] remotePlayers = new StructureRemotePlayer[1003];
+        private StructureRemotePlayer[] remotePlayers;
 
         private RemotePlayer()
         {
-
+            remotePlayers = new StructureRemotePlayer[1003];
+            for (int i = 0; i < remotePlayers.Length; i++)
+            {
+                remotePlayers[i].id = -1;
+                remotePlayers[i].name = "";
+                remotePlayers[i].ping = -1;
+                remotePlayers[i].score = -1;
+            }
         }
 
         public static RemotePlayer GetInstance()
@@ -40,7 +47,7 @@ namespace shadowAPI2
         /// <summary>
         /// Get the id's of player by there names
         /// </summary>
-        /// <param name="player">Array of string with the player names</param>
+        /// <param name="player">Array of string with the player names to be querried</param>
         /// <param name="reloadData">Get the current data if it's true</param>
         /// <returns></returns>
         public int[] GetPlayerIdByName(string[] player, bool reloadData = true)
@@ -86,7 +93,7 @@ namespace shadowAPI2
                                 {
                                     uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
                                     id[j] = i; //(int)Memory.ReadUInteger(remotePlayerData); // Uint16
-                                    remotePlayers[i].id = (uint)i;
+                                    remotePlayers[i].id = i;
                                     break;
                                 }
                             }
@@ -103,7 +110,7 @@ namespace shadowAPI2
                                 {
                                     uint remotePlayerData = Memory.ReadUInteger(remotePlayer + Memory.structRemotePlayersDataOffset);
                                     id[j] = i; //(int)Memory.ReadUInteger(remotePlayerData); // Uint16
-                                    remotePlayers[i].id = (uint)i;
+                                    remotePlayers[i].id = i;
                                     break;
                                 }
                             }
