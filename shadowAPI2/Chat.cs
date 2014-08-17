@@ -116,35 +116,20 @@ namespace shadowAPI2
         /// Send a message/command to the server
         /// </summary>
         /// <param name="message">The message/command</param>
-        /// <param name="state">Don't used</param>
-        public void Send(string message, int state = 0)
+        /// <param name="args">Arguments for a command, e.g an ID</param>
+        public void Send(string message,params object[] args)
         {
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
             if (message.Length != 0)
             {
-                switch (state)
-                {
-                    case 0:
-                        {
-                            if (message[0] == '/')
-                                Memory.Call(Memory.functionSendCommand, new object[] { message }, false);
-                            else
-                                Memory.Call(Memory.functionSendSay, new object[] { message }, false);
-                        }
-                        break;
-                    case 1:
-                        {
-                            Memory.Call(Memory.functionSendCommand, new object[] { message }, false);
-                        }
-                        break;
-                    case 2:
-                        {
-                            Memory.Call(Memory.functionSendSay, new object[] { message }, false);
-                        }
-                        break;
-                }
+                if (args.Length > 0)
+                    message += " " + string.Join(" ", args);
+                if (message[0] == '/')
+                    Memory.Call(Memory.functionSendCommand, new object[] { message }, false);
+                else
+                    Memory.Call(Memory.functionSendSay, new object[] { message }, false);
             }
         }
 
