@@ -158,5 +158,35 @@ namespace shadowAPI2
 
             Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(color) + "}" + text }, true);
         }
+
+        /// <summary>
+        /// Add a new message in the SAMP chat (only local)
+        /// </summary>
+        /// <param name="prefix">The prefix to be written</param>
+        /// <param name="prefixColor">A prefix color in Hex</param>
+        /// <param name="text">The text to be written</param>
+        /// <param name="color">A color in Hex</param>
+        public void AddMessage(string prefix, string prefixColor, string text, string color = "FFFFFF")
+        {
+            if (!Memory.IsInit)
+                Memory.Init(Memory._processName);
+
+            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + prefixColor + "}" + prefix + " {" + color + "}" + text }, true);
+        }
+
+        /// <summary>
+        /// Add a new message in the SAMP chat (only local)
+        /// </summary>
+        /// <param name="prefix">The prefix to be written</param>
+        /// <param name="prefixColor">A Color-Type</param>
+        /// <param name="text">The text to be written</param>
+        /// <param name="color">A Color-Type</param>
+        public void AddMessage(string prefix, Color prefixColor, string text, Color color)
+        {
+            if (!Memory.IsInit)
+                Memory.Init(Memory._processName);
+
+            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(prefixColor) + "}" + prefix + " {" + Util.ColorToHexRGB(color) + "}" + text }, true);
+        }
     }
 }
