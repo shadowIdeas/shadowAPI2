@@ -20,6 +20,8 @@ namespace shadowAPI2
         private const string CHATLOG_FILE = "chatlog.txt";
         private string chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
 
+        private bool blocked;
+
         /// <summary>
         /// Chat-Message delegate
         /// </summary>
@@ -44,6 +46,8 @@ namespace shadowAPI2
             watcher.Filter = CHATLOG_FILE;
             watcher.Changed += ChangeReceived;
             watcher.EnableRaisingEvents = true;
+
+            AppDomain.CurrentDomain.DomainUnload += OnUnload;
         }
 
         internal void ChangeReceived(object ob, FileSystemEventArgs e)
@@ -187,6 +191,26 @@ namespace shadowAPI2
                 Memory.Init(Memory._processName);
 
             Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(prefixColor) + "}" + prefix + " {" + Util.ColorToHexRGB(color) + "}" + text }, true);
+        }
+
+        // UNDONE Need to add
+        public void BlockChatinput()
+        {
+            blocked = !blocked;
+            
+            if(blocked)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        void OnUnload(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

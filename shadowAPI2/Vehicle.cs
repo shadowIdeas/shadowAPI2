@@ -98,7 +98,7 @@ namespace shadowAPI2
                 float y = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedY));
                 float z = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedZ));
 
-                speed = (x + y + z) * 140;
+                speed = (float)(Math.Pow((Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2)), 0.5) * 1.42 * 100);
             }
 
             return speed;
