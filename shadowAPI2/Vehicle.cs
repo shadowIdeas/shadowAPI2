@@ -58,7 +58,7 @@ namespace shadowAPI2
         }
 
 
-        internal uint IsInVehicle() // TODO In Player class?
+        internal uint IsInVehicle()
         {
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
