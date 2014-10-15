@@ -63,7 +63,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.vehicleOffsetBase, 4), 0);
+            uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.OFFSET_VEHICLE_BASE, 4), 0);
 
             return result;
         }
@@ -78,7 +78,7 @@ namespace shadowAPI2
             float damage = -1.0f;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                damage = Memory.ReadFloat(vehicle + Memory.vehicleOffsetDamage);
+                damage = Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_DAMAGE);
             }
 
             return damage;
@@ -88,15 +88,15 @@ namespace shadowAPI2
         /// Get the speed of the current vehicle
         /// </summary>
         /// <returns>Speed</returns>
-        public float GetSpeed() // Buggy
+        public float GetSpeed()
         {
             uint vehicle = 0;
             float speed = -1.0f;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                float x = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedX));
-                float y = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedY));
-                float z = Math.Abs(Memory.ReadFloat(vehicle + Memory.vehicleOffsetSpeedZ));
+                float x = Math.Abs(Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_SPEED_X));
+                float y = Math.Abs(Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_SPEED_Y));
+                float z = Math.Abs(Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_SPEED_Z));
 
                 speed = (float)(Math.Pow((Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2)), 0.5) * 1.42 * 100);
             }
@@ -114,7 +114,7 @@ namespace shadowAPI2
             bool locked = false;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                int state = Memory.ReadInteger(vehicle + Memory.vehicleOffsetLockState);
+                int state = Memory.ReadInteger(vehicle + Memory.OFFSET_VEHICLE_LOCKSTATE);
                 if (state == 2)
                     locked = true;
             }
@@ -132,7 +132,7 @@ namespace shadowAPI2
             int id = -1;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                id = Memory.ReadInteger16(vehicle + Memory.vehicleOffsetModelId);
+                id = Memory.ReadInteger16(vehicle + Memory.OFFSET_VEHICLE_MODEL_ID);
             }
 
             return id;
@@ -181,13 +181,13 @@ namespace shadowAPI2
             return id;
         }
 
-        public float GetCollideStatus()
+        internal float GetCollideStatus()
         {
             uint vehicle = 0;
             float collideStatus = -1.0f;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                collideStatus = Memory.ReadFloat(vehicle + Memory.vehicleOffsetCollideStatus);
+                collideStatus = Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_COLLIDE_STATUS);
             }
 
             return collideStatus;
@@ -205,7 +205,7 @@ namespace shadowAPI2
             {
                 for (int i = 0; i < seatStates.Length; i++)
                 {
-                    if (Memory.ReadInteger(vehicle + (Memory.vehicleOffsetSeats * 4)) != 0)
+                    if (Memory.ReadInteger(vehicle + (Memory.OFFSET_VEHICLE_DRIVER * 4)) != 0)
                         seatStates[i] = true;
                 }
             }
@@ -223,7 +223,7 @@ namespace shadowAPI2
             bool enabled = false;
             if ((vehicle = IsInVehicle()) != 0)
             {
-                byte state = Memory.ReadByte(vehicle + Memory.vehicleOffsetEngineState);
+                byte state = Memory.ReadByte(vehicle + Memory.OFFSET_VEHICLE_ENGINESTATE);
                 if (state == 24 || state == 56 || state == 88 || state == 120)
                     enabled = true;
             }

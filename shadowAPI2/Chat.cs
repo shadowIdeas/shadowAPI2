@@ -193,8 +193,9 @@ namespace shadowAPI2
             Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(prefixColor) + "}" + prefix + " {" + Util.ColorToHexRGB(color) + "}" + text }, true);
         }
 
-        // UNDONE Need to add
-        public void BlockChatinput()
+
+        // UNDONE
+        public void BlockChatInput()
         {
             blocked = !blocked;
             
@@ -210,7 +211,10 @@ namespace shadowAPI2
 
         void OnUnload(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if(blocked)
+            {
+
+            }
         }
     }
 }

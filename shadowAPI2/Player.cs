@@ -217,11 +217,12 @@ namespace shadowAPI2
         /// Get the current GTA Money what the players has on the hand.
         /// </summary>
         /// <returns>GTA Money</returns>
-        public int GetHandCash()
+        public int GetMoney()
         {
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
-            return Memory.ReadInteger16(Memory.playerMoney);
+
+            return Memory.ReadInteger16(Memory.PLAYER_MONEY);
         }
 
         /// <summary>
@@ -232,7 +233,8 @@ namespace shadowAPI2
         {
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
-            return Memory.ReadInteger16(Memory.playerWeapon);
+
+            return Memory.ReadInteger16(Memory.PLAYER_WEAPON);
         }
     }
 }

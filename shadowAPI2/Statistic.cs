@@ -32,7 +32,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            float result = Memory.ReadFloat(Memory.statisticFeetMeters);
+            float result = Memory.ReadFloat(Memory.STATÌSTIC_FOOT_METER);
 
             return result;
         }
@@ -46,7 +46,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            float result = Memory.ReadFloat(Memory.statisticVehicleMeters);
+            float result = Memory.ReadFloat(Memory.STATÌSTIC_VEHICLE_METER);
 
             return result;
         }
@@ -60,7 +60,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            float result = Memory.ReadFloat(Memory.statisticBikeMeters);
+            float result = Memory.ReadFloat(Memory.STATÌSTIC_BIKE_METER);
 
             return result;
         }
@@ -74,7 +74,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            float result = Memory.ReadFloat(Memory.statisticHelicopterMeters);
+            float result = Memory.ReadFloat(Memory.STATÌSTIC_HELICOPTER_METER);
 
             return result;
         }
@@ -88,7 +88,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            float result = Memory.ReadFloat(Memory.statisticShipMeters);
+            float result = Memory.ReadFloat(Memory.STATÌSTIC_SHIP_METER);
 
             return result;
         }
@@ -102,7 +102,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            float result = Memory.ReadFloat(Memory.statisticSwimMeters);
+            float result = Memory.ReadFloat(Memory.STATÌSTIC_SWIM_METER);
 
             return result;
         }

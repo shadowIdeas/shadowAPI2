@@ -32,7 +32,7 @@ namespace shadowAPI2
                 Memory.Init();
 
             string weatherName = "Unknown";
-            short weatherId = Memory.ReadInteger16(Memory.worldWeather);
+            short weatherId = Memory.ReadInteger16(Memory.WORLD_WEATHER);
 
             switch(weatherId)
             { 
@@ -145,7 +145,7 @@ namespace shadowAPI2
             return weatherName;
         }
 
-        public void CreateVojel()
+        internal void CreateVojel()
         {
             /*
             float x = Player.PlayerX();
