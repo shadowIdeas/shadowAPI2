@@ -45,36 +45,36 @@ namespace shadowAPI2
 
         // Read addresses
         #region SAMP specific and used for more classes
-        private const uint OFFSET_SAMP = 0x212A80;
-        private const uint OFFSET_PLAYER_POOL = 0x3D9;
-        private const uint OFFSET_PLAYER = 0x14;
+        private static uint OFFSET_SAMP = 0x212A80;
+        private static uint OFFSET_PLAYER_POOL = 0x3D9;
+        private static uint OFFSET_PLAYER = 0x14;
         #endregion
         #region Need for Game class
-        public const uint FRAMES_PER_SECOND = 0xB729A0;
+        public static uint FRAMES_PER_SECOND = 0xB729A0;
         #endregion
         #region Need for Player class
         // Player
-        private const uint OFFSET_PLAYER_BASE = 0xB6F5F0;
+        private static uint OFFSET_PLAYER_BASE = 0xB6F5F0;
 
         private static uint playerBase = 0;
 
-        public const uint PLAYER_MONEY = 0x0B7CE54;
+        public static uint PLAYER_MONEY = 0x0B7CE54;
 
-        public const uint PLAYER_WEAPON = 0x0BAA410;
+        public static uint PLAYER_WEAPON = 0x0BAA410;
 
         // Health and armor
-        private const uint OFFSET_PLAYER_HEALTH = 0x540;
-        private const uint OFFSET_PLAYER_ARMOR = 0x548;
+        private static uint OFFSET_PLAYER_HEALTH = 0x540;
+        private static uint OFFSET_PLAYER_ARMOR = 0x548;
 
         public static uint playerHealth = 0;
         public static uint playerArmor = 0;
 
         // Position
-        private const uint OFFSET_PLAYER_MATRIX = 0x14;
-        private const uint OFFSET_PLAYER_POSITION_ROTATION = 0x14;
-        private const uint OFFSET_PLAYER_POSITION_X = 0x30;
-        private const uint OFFSET_PLAYER_POSITION_Y = 0x34;
-        private const uint OFFSET_PLAYER_POSITION_Z = 0x38;
+        private static uint OFFSET_PLAYER_MATRIX = 0x14;
+        private static uint OFFSET_PLAYER_POSITION_ROTATION = 0x14;
+        private static uint OFFSET_PLAYER_POSITION_X = 0x30;
+        private static uint OFFSET_PLAYER_POSITION_Y = 0x34;
+        private static uint OFFSET_PLAYER_POSITION_Z = 0x38;
 
         private static uint playerPosition = 0;
         public static uint playerPositionRotation = 0;
@@ -83,14 +83,14 @@ namespace shadowAPI2
         public static uint playerPositionZ = 0;
 
         // Location
-        private const uint OFFSET_PLAYER_LOCATION = 0x2F;
+        private static uint OFFSET_PLAYER_LOCATION = 0x2F;
         public static uint playerLocation = 0;
 
         // SAMP informations
-        private const uint OFFSET_PLAYER_NAME = 0x2123F7;
+        private static uint OFFSET_PLAYER_NAME = 0x2123F7;
         public static uint playerName = 0;
 
-        private const uint OFFSET_PLAYER_ID = 0x04;
+        private static uint OFFSET_PLAYER_ID = 0x04;
         public static uint playerId = 0;
 
         //public static uint playerNameLength = 
@@ -115,34 +115,34 @@ namespace shadowAPI2
 
         public static uint OFFSET_VEHICLE_ENGINESTATE = 0x428;
 
-        private const uint OFFSET_LOCAL_PLAYER = 0x22;
-        private const uint OFFSET_VEHICLE_ID = 0x8;
+        private static uint OFFSET_LOCAL_PLAYER = 0x22;
+        private static uint OFFSET_VEHICLE_ID = 0x8;
 
         public static uint vehicleId = 0;
 
         #endregion
         #region Need for Statistic class
         // Stats
-        public const uint STATÌSTIC_FOOT_METER = 0xB7938C;
-        public const uint STATÌSTIC_VEHICLE_METER = 0xB79390;
-        public const uint STATÌSTIC_BIKE_METER = 0xB79394;
-        public const uint STATÌSTIC_HELICOPTER_METER = 0xB793A0;
-        public const uint STATÌSTIC_SHIP_METER = 0xB79398;
-        public const uint STATÌSTIC_SWIM_METER = 0xB793E8;
+        public static uint STATÌSTIC_FOOT_METER = 0xB7938C;
+        public static uint STATÌSTIC_VEHICLE_METER = 0xB79390;
+        public static uint STATÌSTIC_BIKE_METER = 0xB79394;
+        public static uint STATÌSTIC_HELICOPTER_METER = 0xB793A0;
+        public static uint STATÌSTIC_SHIP_METER = 0xB79398;
+        public static uint STATÌSTIC_SWIM_METER = 0xB793E8;
         #endregion
         #region Need for Chat class
         // Chat
-        private const uint OFFSET_CHAT_MESSAGE = 0x212A6C;
-        private const uint OFFSET_CHAT = 0x212A94;
-        private const uint OFFSET_CHAT_OPEN = 0x55;
+        private static uint OFFSET_CHAT_MESSAGE = 0x212A6C;
+        private static uint OFFSET_CHAT = 0x212A94;
+        private static uint OFFSET_CHAT_OPEN = 0x55;
 
         public static uint chatMessage = 0;
         private static uint chat = 0;
         public static uint isChatOpen = 0;
 
         // Dialog
-        private const uint OFFSET_DIALOG = 0x212A40;
-        private const uint OFFSET_DIALOG_OPEN = 0x28;
+        private static uint OFFSET_DIALOG = 0x212A40;
+        private static uint OFFSET_DIALOG_OPEN = 0x28;
 
         private static uint dialog = 0;
         public static uint isDialogOpen = 0;
@@ -159,14 +159,14 @@ namespace shadowAPI2
         public static uint structPlayerPool = 0;
         #endregion
         #region Need for World class
-        public const uint WORLD_WEATHER = 0xC81320;
+        public static uint WORLD_WEATHER = 0xC81320;
         #endregion
         // Function addresses
         #region Need for Chat class
         // Chat
-        private const uint OFFSET_FUNCTION_SEND_TEXT = 0x4CA0;
-        private const uint OFFSET_FUNCTION_SEND_COMMAND = 0x7BDD0;
-        private const uint OFFSET_FUNCTION_ADD_MESSAGE = 0x7AA00;
+        private static uint OFFSET_FUNCTION_SEND_TEXT = 0x4CA0;
+        private static uint OFFSET_FUNCTION_SEND_COMMAND = 0x7BDD0;
+        private static uint OFFSET_FUNCTION_ADD_MESSAGE = 0x7AA00;
 
         public static uint functionSendSay = 0;
         public static uint functionSendCommand = 0;
@@ -218,6 +218,28 @@ namespace shadowAPI2
         private static void InitVariables()
         {
             // Variables
+
+            string version = ReadString(sampModule + 0xCEAB4, 7);
+
+            if (version == "0.3z-R2")
+            {
+                OFFSET_SAMP = 0x212AB8;
+
+                OFFSET_CHAT_MESSAGE = 0x212AA4;
+                OFFSET_CHAT = 0x212ACC;
+                OFFSET_DIALOG = 0x212A78;
+
+                OFFSET_FUNCTION_SEND_TEXT = 0x4C30;
+                OFFSET_FUNCTION_SEND_COMMAND = 0x63390;
+                OFFSET_FUNCTION_ADD_MESSAGE = 0x61F40;
+
+                OFFSET_REMOTE_PLAYER_NAME_LENGTH = 0x27;
+                OFFSET_REMOTE_PLAYER_NAME = 0x17;
+                OFFSET_REMOTE_PLAYER_SCORE = 0x3;
+
+                OFFSET_PLAYER_NAME = 0x21242F;
+            }
+
             #region SAMP specified
             structSamp = BitConverter.ToUInt32(ReadMemory(sampModule + OFFSET_SAMP, 4), 0);
             structSampPools = BitConverter.ToUInt32(ReadMemory(structSamp + OFFSET_PLAYER_POOL, 4), 0);

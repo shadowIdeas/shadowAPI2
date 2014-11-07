@@ -16,7 +16,7 @@ namespace shadowAPI2TestApplication
         private static shadowAPI2.World world = shadowAPI2.World.GetInstance();
         static void Main(string[] args)
         {
-            shadowAPI2.API.Init("gta_sa");
+            shadowAPI2.API.Init("rgn_ac_gta");
 
             chat.OnChatMessage += OnChatMessage;
 
