@@ -131,9 +131,9 @@ namespace shadowAPI2
                 if (args.Length > 0)
                     message += " " + string.Join(" ", args);
                 if (message[0] == '/')
-                    Memory.Call(Memory.functionSendCommand, new object[] { message }, false);
+                    Memory.Call(Memory.functionSendCommand, false, message);
                 else
-                    Memory.Call(Memory.functionSendSay, new object[] { message }, false);
+                    Memory.Call(Memory.functionSendSay, false, message);
             }
         }
 
@@ -147,7 +147,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + color + "}" + text }, true);
+            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + color + "}" + text);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(color) + "}" + text }, true);
+            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(color) + "}" + text);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + prefixColor + "}" + prefix + " {" + color + "}" + text }, true);
+            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + prefixColor + "}" + prefix + " {" + color + "}" + text);
         }
 
         /// <summary>
@@ -190,9 +190,17 @@ namespace shadowAPI2
             if (!Memory.IsInit)
                 Memory.Init(Memory._processName);
 
-            Memory.Call(Memory.functionAddChatMessage, new object[] { (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(prefixColor) + "}" + prefix + " {" + Util.ColorToHexRGB(color) + "}" + text }, true);
+            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(prefixColor) + "}" + prefix + " {" + Util.ColorToHexRGB(color) + "}" + text);
         }
 
+
+        public void ShowDialog(byte style, string caption, string text, string button = "", string button2 = "")
+        {
+            List<byte> ptr = new List<byte>();
+            ptr.Add(0xB9);
+            ptr.AddRange(BitConverter.GetBytes((uint)Memory.dialog));
+            Memory.Call(Memory.functionShowDialog, ptr.ToArray(), false, 1, (int)style, caption, text, button, button2, 0);
+        }
 
         // UNDONE
         public void BlockChatInput()

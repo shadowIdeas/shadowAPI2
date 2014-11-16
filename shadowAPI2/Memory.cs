@@ -144,7 +144,7 @@ namespace shadowAPI2
         private static uint OFFSET_DIALOG = 0x212A40;
         private static uint OFFSET_DIALOG_OPEN = 0x28;
 
-        private static uint dialog = 0;
+        public static uint dialog = 0;
         public static uint isDialogOpen = 0;
         #endregion
         #region Need for RemotePlayer class
@@ -167,10 +167,12 @@ namespace shadowAPI2
         private static uint OFFSET_FUNCTION_SEND_TEXT = 0x4CA0;
         private static uint OFFSET_FUNCTION_SEND_COMMAND = 0x7BDD0;
         private static uint OFFSET_FUNCTION_ADD_MESSAGE = 0x7AA00;
+        private static uint OFFSET_FUNCTION_SHOW_DIALOG = 0x816F0;
 
         public static uint functionSendSay = 0;
         public static uint functionSendCommand = 0;
         public static uint functionAddChatMessage = 0;
+        public static uint functionShowDialog = 0;
         #endregion
 
         internal static void Init(string processName = "rgn_ac_gta")
@@ -186,6 +188,7 @@ namespace shadowAPI2
 
                 pid = (uint)processes[0].Id;
                 ProcessModuleCollection modules = processes[0].Modules;
+
                 foreach (ProcessModule item in modules)
                 {
                     if (item.ModuleName == "samp.dll")
@@ -232,6 +235,7 @@ namespace shadowAPI2
                 OFFSET_FUNCTION_SEND_TEXT = 0x4C30;
                 OFFSET_FUNCTION_SEND_COMMAND = 0x63390;
                 OFFSET_FUNCTION_ADD_MESSAGE = 0x61F40;
+                OFFSET_FUNCTION_SHOW_DIALOG = 0x68930;
 
                 OFFSET_REMOTE_PLAYER_NAME_LENGTH = 0x27;
                 OFFSET_REMOTE_PLAYER_NAME = 0x17;
@@ -290,10 +294,11 @@ namespace shadowAPI2
             #endregion
 
             // Functions
-            #region Chat functions
+            #region Functions
             functionSendSay = sampModule + OFFSET_FUNCTION_SEND_TEXT;
             functionSendCommand = sampModule + OFFSET_FUNCTION_SEND_COMMAND;
             functionAddChatMessage = sampModule + OFFSET_FUNCTION_ADD_MESSAGE;
+            functionShowDialog = sampModule + OFFSET_FUNCTION_SHOW_DIALOG;
             #endregion
         }
 
@@ -426,7 +431,7 @@ namespace shadowAPI2
             return WriteMemory(address, bytes, (uint)512);
         }
 
-        internal static void Call(uint address, object[] parameter, bool stackClear)
+        internal static void Call(uint address, bool stackClear, params object[] parameter)
         {
             List<byte> data = new List<byte>();
 
@@ -482,6 +487,73 @@ namespace shadowAPI2
             WaitForSingleObject(thread, 0xFFFFFFFF);
         }
 
+        internal static void Call(uint address, byte[] thisCall, bool stackClear, params object[] parameter)
+        {
+            List<byte> data = new List<byte>();
+
+            data.AddRange(thisCall);
+
+            int usedParameters = 0;
+            for (int i = parameter.Length - 1; i >= 0; i--)
+            {
+                IntPtr memoryAddress = IntPtr.Zero;
+                Type type = parameter[i].GetType();
+                if (type == typeof(string) && usedParameters <= parameterMemory.Length - 1)
+                {
+                    memoryAddress = parameterMemory[usedParameters];
+                    if (!WriteString((uint)memoryAddress, (string)parameter[i]))
+                        return;
+                    usedParameters++;
+                }
+                else if (type == typeof(uint))
+                {
+                    memoryAddress = new IntPtr(Convert.ToUInt32(parameter[i]));
+                }
+                else if (type == typeof(int))
+                {
+                    memoryAddress = new IntPtr(Convert.ToInt32(parameter[i]));
+                }
+                else if(type == typeof(Single) || type == typeof(Double) || type == typeof(float))
+                {
+                    if(type == typeof(Single))
+                        memoryAddress = new IntPtr(Convert.ToInt32(BitConverter.ToInt32(BitConverter.GetBytes((Single)parameter[i]), 0)));
+                    else if (type == typeof(Double))
+                        memoryAddress = new IntPtr(Convert.ToInt32(BitConverter.ToInt32(BitConverter.GetBytes((Double)parameter[i]), 0)));
+                    else if (type == typeof(float))
+                        memoryAddress = new IntPtr(Convert.ToInt32(BitConverter.ToInt32(BitConverter.GetBytes((float)parameter[i]), 0)));
+                }
+                    /*
+                else if (type == typeof(Single) && usedParameters <= parameterMemory.Length - 1)
+                {
+                    memoryAddress = parameterMemory[usedParameters];
+                    if (!WriteFloat((uint)memoryAddress, (float)parameter[i]))
+                        return;
+                    usedParameters++;
+                }*/
+                else
+                    return;
+
+                data.Add(0x68);
+                data.AddRange(BitConverter.GetBytes((uint)memoryAddress));
+            }
+
+            data.Add(0xE8);
+            int offset = (int)address - ((int)parameterMemory[parameterMemory.Length - 1] + ((parameter.Length * 5 + 5) + thisCall.Length));
+            data.AddRange(BitConverter.GetBytes(offset));
+
+            if (stackClear)
+            {
+                data.AddRange(new byte[] { 0x83, 0xC4 });
+                data.Add(Convert.ToByte(parameter.Length * 4));
+            }
+            data.Add(0xC3);
+
+            if (!WriteMemory((uint)parameterMemory[parameterMemory.Length - 1], data.ToArray(), (uint)data.Count))
+                return;
+
+            IntPtr thread = CreateRemoteThread(handle, IntPtr.Zero, 0, (uint)parameterMemory[parameterMemory.Length - 1], IntPtr.Zero, 0, IntPtr.Zero);
+            WaitForSingleObject(thread, 0xFFFFFFFF);
+        }
 
         private static void OnGtaExited(object sender, EventArgs e)
         {

@@ -5,19 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-
 namespace shadowAPI2TestApplication
 {
-    class Program
+    class Program 
     {
         private static shadowAPI2.Chat chat = shadowAPI2.Chat.GetInstance();
         private static shadowAPI2.Player player = shadowAPI2.Player.GetInstance();
         private static shadowAPI2.RemotePlayer remotePlayer = shadowAPI2.RemotePlayer.GetInstance();
         private static shadowAPI2.World world = shadowAPI2.World.GetInstance();
+
         static void Main(string[] args)
         {
-            shadowAPI2.API.Init("rgn_ac_gta");
-
+            shadowAPI2.API.Init("gta_sa");
             chat.OnChatMessage += OnChatMessage;
 
             Console.WriteLine("Test Application started, press ENTER to start the test");
@@ -25,6 +24,8 @@ namespace shadowAPI2TestApplication
 
             Console.WriteLine("Waiting 5 Seconds...");
             System.Threading.Thread.Sleep(5000);
+
+            chat.ShowDialog(0, "The test", "This is a nice Test", "Yes!", "Nope?");
 
             chat.AddMessage("My current Weapon ID are " + player.GetWeaponId());
 
@@ -57,11 +58,7 @@ namespace shadowAPI2TestApplication
 
         private static void OnChatMessage(DateTime time, string message)
         {
-            if(message.EndsWith("shadowAPI2"))
-            {
-                chat.AddMessage("Anyone written 'shadowAPI2'!");
-            }
-            else if(message.EndsWith("Say me the weather"))
+            if(message.EndsWith("Say me the weather"))
             {
                 chat.AddMessage("The current weather is " + world.GetWeather());
             }
