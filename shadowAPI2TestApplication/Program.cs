@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using shadowAPI2;
+
 namespace shadowAPI2TestApplication
 {
     class Program 
@@ -25,7 +27,7 @@ namespace shadowAPI2TestApplication
             Console.WriteLine("Waiting 5 Seconds...");
             System.Threading.Thread.Sleep(5000);
 
-            chat.ShowDialog(0, "The test", "This is a nice Test", "Yes!", "Nope?");
+            chat.ShowDialog(DialogStyle.DIALOG_STYLE_MSGBOX, "The test", "This is a nice Test", "Yes!", "Nope?");
 
             chat.AddMessage("My current Weapon ID are " + player.GetWeaponId());
 

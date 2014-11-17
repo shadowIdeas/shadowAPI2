@@ -194,7 +194,7 @@ namespace shadowAPI2
         }
 
 
-        public void ShowDialog(byte style, string caption, string text, string button = "", string button2 = "")
+        public void ShowDialog(DialogStyle style, string caption, string text, string button = "", string button2 = "")
         {
             List<byte> ptr = new List<byte>();
             ptr.Add(0xB9);
