@@ -175,47 +175,105 @@ namespace shadowAPI2
         public static uint functionShowDialog = 0;
         #endregion
 
-        internal static void Init(string processName = "rgn_ac_gta")
+        internal static bool Init(string processName = "rgn_ac_gta")
         {
-            _processName = processName;
-
-            Process[] processes = Process.GetProcessesByName(_processName);
-            if(processes.Length > 0 && !isInit)
+            try
             {
-                gtaProcess = processes[0];
-                gtaProcess.EnableRaisingEvents = true;
-                gtaProcess.Exited += OnGtaExited;
+                _processName = processName;
 
-                pid = (uint)processes[0].Id;
-                ProcessModuleCollection modules = processes[0].Modules;
-
-                foreach (ProcessModule item in modules)
+                Process[] processes = Process.GetProcessesByName(_processName);
+                if (processes.Length > 0 && !isInit)
                 {
-                    if (item.ModuleName == "samp.dll")
+                    gtaProcess = processes[0];
+                    gtaProcess.EnableRaisingEvents = true;
+                    gtaProcess.Exited += OnGtaExited;
+
+                    pid = (uint)processes[0].Id;
+                    ProcessModuleCollection modules = processes[0].Modules;
+
+                    foreach (ProcessModule item in modules)
                     {
-                        sampModule = (uint)item.BaseAddress;
+                        if (item.ModuleName == "samp.dll")
+                        {
+                            sampModule = (uint)item.BaseAddress;
+                        }
+                        else if (item.ModuleName == _processName + ".exe")
+                        {
+                            gtaModule = (uint)item.BaseAddress;
+                        }
                     }
-                    else if (item.ModuleName == _processName + ".exe")
+
+                    handle = OpenProcess(0x1F0FFF, 1, pid);
+
+                    //// Allocate
+                    allocMemory = VirtualAllocEx(handle, IntPtr.Zero, RESERVE * 1024, 0x1000 | 0x2000, 0x40);
+                    int x = Marshal.GetLastWin32Error();
+
+                    for (int i = 0; i < parameterMemory.Length; i++)
                     {
-                        gtaModule = (uint)item.BaseAddress;
+                        parameterMemory[i] = allocMemory + (1024 * i);
                     }
+
+                    InitVariables();
+
+                    isInit = true;
+                    return true;
                 }
-
-                handle = OpenProcess(0x1F0FFF, 1, pid);
-
-                //// Allocate
-                allocMemory = VirtualAllocEx(handle, IntPtr.Zero, RESERVE * 1024, 0x1000 | 0x2000, 0x40);
-                int x = Marshal.GetLastWin32Error();
-
-                for (int i = 0; i < parameterMemory.Length; i++)
-                {
-                    parameterMemory[i] = allocMemory + (1024 * i);
-                }
-
-                InitVariables();
-
-                isInit = true;
             }
+            catch(Exception)
+            { }
+
+            return false;
+        }
+
+        internal static bool Init(Process process)
+        {
+            try
+            {
+                _processName = process.ProcessName;
+
+                if (!isInit)
+                {
+                    gtaProcess = process;
+                    gtaProcess.EnableRaisingEvents = true;
+                    gtaProcess.Exited += OnGtaExited;
+
+                    pid = (uint)process.Id;
+                    ProcessModuleCollection modules = process.Modules;
+
+                    foreach (ProcessModule item in modules)
+                    {
+                        if (item.ModuleName == "samp.dll")
+                        {
+                            sampModule = (uint)item.BaseAddress;
+                        }
+                        else if (item.ModuleName == _processName + ".exe")
+                        {
+                            gtaModule = (uint)item.BaseAddress;
+                        }
+                    }
+
+                    handle = OpenProcess(0x1F0FFF, 1, pid);
+
+                    //// Allocate
+                    allocMemory = VirtualAllocEx(handle, IntPtr.Zero, RESERVE * 1024, 0x1000 | 0x2000, 0x40);
+                    int x = Marshal.GetLastWin32Error();
+
+                    for (int i = 0; i < parameterMemory.Length; i++)
+                    {
+                        parameterMemory[i] = allocMemory + (1024 * i);
+                    }
+
+                    InitVariables();
+
+                    isInit = true;
+                    return true;
+                }
+            }
+            catch (Exception)
+            { }
+
+            return false;
         }
 
         private static void InitVariables()
