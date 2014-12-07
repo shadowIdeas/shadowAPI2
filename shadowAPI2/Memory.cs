@@ -168,11 +168,13 @@ namespace shadowAPI2
         private static uint OFFSET_FUNCTION_SEND_COMMAND = 0x7BDD0;
         private static uint OFFSET_FUNCTION_ADD_MESSAGE = 0x7AA00;
         private static uint OFFSET_FUNCTION_SHOW_DIALOG = 0x816F0;
+        private static uint OFFSET_FUNCTION_UPDATE_PLAYER_DATA = 0x7D10;
 
         public static uint functionSendSay = 0;
         public static uint functionSendCommand = 0;
         public static uint functionAddChatMessage = 0;
         public static uint functionShowDialog = 0;
+        public static uint functionUpdatePlayerData = 0;
         #endregion
 
         internal static bool Init(string processName = "rgn_ac_gta")
@@ -294,6 +296,7 @@ namespace shadowAPI2
                 OFFSET_FUNCTION_SEND_COMMAND = 0x63390;
                 OFFSET_FUNCTION_ADD_MESSAGE = 0x61F40;
                 OFFSET_FUNCTION_SHOW_DIALOG = 0x68930;
+                OFFSET_FUNCTION_UPDATE_PLAYER_DATA = 0x7C50;
 
                 OFFSET_REMOTE_PLAYER_NAME_LENGTH = 0x27;
                 OFFSET_REMOTE_PLAYER_NAME = 0x17;
@@ -357,12 +360,13 @@ namespace shadowAPI2
             functionSendCommand = sampModule + OFFSET_FUNCTION_SEND_COMMAND;
             functionAddChatMessage = sampModule + OFFSET_FUNCTION_ADD_MESSAGE;
             functionShowDialog = sampModule + OFFSET_FUNCTION_SHOW_DIALOG;
+            functionUpdatePlayerData = sampModule + OFFSET_FUNCTION_UPDATE_PLAYER_DATA;
             #endregion
         }
 
         internal static void UnInit()
         {
-            if(!isInit && handle != IntPtr.Zero)
+            if(isInit && handle != IntPtr.Zero)
             {
                 Process[] processes = Process.GetProcessesByName("rgn_ac_gta");
                 if(processes.Length > 0 && processes[0].Id == pid)

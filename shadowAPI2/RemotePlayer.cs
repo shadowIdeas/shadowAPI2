@@ -322,5 +322,16 @@ namespace shadowAPI2
 
             return connected;
         }
+
+        public void UpdatePlayerData()
+        {
+            if (!Memory.IsInit)
+                Memory.Init(Memory._processName);
+
+            List<byte> ptr = new List<byte>();
+            ptr.Add(0xB9);
+            ptr.AddRange(BitConverter.GetBytes((uint)Memory.structSamp));
+            Memory.Call(Memory.functionUpdatePlayerData, ptr.ToArray(), false);
+        }
     }
 }
