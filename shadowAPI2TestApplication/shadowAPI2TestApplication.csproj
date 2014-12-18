@@ -55,7 +55,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\shadowAPI2\shadowAPI2\shadowAPI2.csproj">
+    <ProjectReference Include="..\shadowAPI2\shadowAPI2.csproj">
       <Project>{6c17f260-4013-452d-93e2-af7cbc3b4b0b}</Project>
       <Name>shadowAPI2</Name>
     </ProjectReference>
