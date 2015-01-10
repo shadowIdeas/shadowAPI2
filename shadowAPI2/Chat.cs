@@ -36,18 +36,37 @@ namespace shadowAPI2
 
         private Chat()
         {
-            reader = new StreamReader(new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Encoding.Default, true);
-            reader.ReadToEnd();
+            try
+            {
+                reader = new StreamReader(new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Encoding.Default, true);
+                reader.ReadToEnd();
 
-            info = new FileInfo(Path.Combine(chatlogPath, CHATLOG_FILE));
+                info = new FileInfo(Path.Combine(chatlogPath, CHATLOG_FILE));
 
-            watcher = new FileSystemWatcher();
-            watcher.Path = chatlogPath;
-            watcher.Filter = CHATLOG_FILE;
-            watcher.Changed += ChangeReceived;
-            watcher.EnableRaisingEvents = true;
+                watcher = new FileSystemWatcher();
+                watcher.Path = chatlogPath;
+                watcher.Filter = CHATLOG_FILE;
+                watcher.Changed += ChangeReceived;
+                watcher.EnableRaisingEvents = true;
 
-            AppDomain.CurrentDomain.DomainUnload += OnUnload;
+                AppDomain.CurrentDomain.DomainUnload += OnUnload;
+            }
+            catch(Exception)
+            {
+                chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "GTA San Andreas User Files\\SAMP\\");
+                reader = new StreamReader(new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Encoding.Default, true);
+                reader.ReadToEnd();
+
+                info = new FileInfo(Path.Combine(chatlogPath, CHATLOG_FILE));
+
+                watcher = new FileSystemWatcher();
+                watcher.Path = chatlogPath;
+                watcher.Filter = CHATLOG_FILE;
+                watcher.Changed += ChangeReceived;
+                watcher.EnableRaisingEvents = true;
+
+                AppDomain.CurrentDomain.DomainUnload += OnUnload;
+            }
         }
 
         internal void ChangeReceived(object ob, FileSystemEventArgs e)
