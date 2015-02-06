@@ -205,7 +205,7 @@ namespace shadowAPI2
             {
                 for (int i = 0; i < seatStates.Length; i++)
                 {
-                    if (Memory.ReadInteger(vehicle + (Memory.OFFSET_VEHICLE_DRIVER * 4)) != 0)
+                    if (Memory.ReadInteger(vehicle + (Memory.OFFSET_VEHICLE_DRIVER + (Convert.ToUInt32(i) * 0x4))) != 0)
                         seatStates[i] = true;
                 }
             }
