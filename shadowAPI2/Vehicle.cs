@@ -8,8 +8,8 @@ namespace shadowAPI2
 {
     public class Vehicle
     {
-        private static Vehicle instance;
-        private string[] vehicleNames = {
+        private static IntPtr numberplate;
+        private static string[] vehicleNames = {
                                             "Landstalker","Bravura","Buffalo","Linerunner","Perrenial","Sentinel",
                                             "Dumper","Firetruck","Trashmaster","Stretch","Manana","Infernus",
                                             "Voodoo","Pony","Mule","Cheetah","Ambulance","Leviathan","Moonbeam",
@@ -44,59 +44,89 @@ namespace shadowAPI2
                                             "Tiller","Utility Trailer"
                                             };
 
-        private Vehicle()
+        public static void GenerateAddresses(IntPtr sampBase)
         {
-
+            numberplate = IntPtr.Add(sampBase, 0xD4174);
         }
 
-        public static Vehicle GetInstance()
+        public static IntPtr GetVehiclePointer()
         {
-            if (instance == null)
-                instance = new Vehicle();
+            Memory.Init();
 
-            return instance;
+            var pointer = IntPtr.Zero;
+            Memory.ReadMemory<IntPtr>(0xBA18FC, out pointer);
+            return pointer;
         }
 
-
-        internal uint IsInVehicle()
+        /// <summary>
+        /// Get the lock state of the current vehicle
+        /// </summary>
+        /// <returns>Lock state</returns>
+        public static bool IsLocked()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            uint result = BitConverter.ToUInt32(Memory.ReadMemory(Memory.OFFSET_VEHICLE_BASE, 4), 0);
+            var state = 0;
+            if (Memory.ReadMemory<int>(GetVehiclePointer() + 0x4F8, out state))
+                if (state == 2)
+                    return true;
 
-            return result;
+            return false;
         }
 
         /// <summary>
         /// Get the Dl of the vehicle
         /// </summary>
         /// <returns>Dl</returns>
-        public float GetDl()
+        public static float GetHealth()
         {
-            uint vehicle = 0;
-            float damage = -1.0f;
-            if ((vehicle = IsInVehicle()) != 0)
-            {
-                damage = Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_DAMAGE);
-            }
+            Memory.Init();
 
-            return damage;
+            var health = 0.0f;
+            Memory.ReadMemory<float>(GetVehiclePointer() + 0x4C0, out health);
+            return health;
+        }
+
+        /// <summary>
+        /// Get the model id of the current vehicle
+        /// </summary>
+        /// <returns>Id</returns>
+        public static int GetModelId()
+        {
+            Memory.Init();
+
+            Int16 id = 0;
+            Memory.ReadMemory<Int16>(GetVehiclePointer() + 0x22, out id);
+            return (int)id;
+        }
+
+        public static string GetNumberplate()
+        {
+            Memory.Init();
+
+            var numberplateString = Memory.ReadString(numberplate, 8);
+            return numberplateString;
         }
 
         /// <summary>
         /// Get the speed of the current vehicle
         /// </summary>
         /// <returns>Speed</returns>
-        public float GetSpeed()
+        public static float GetSpeed()
         {
-            uint vehicle = 0;
+            IntPtr vehicle = IntPtr.Zero;
             float speed = -1.0f;
-            if ((vehicle = IsInVehicle()) != 0)
+            if ((vehicle = GetVehiclePointer()) != IntPtr.Zero)
             {
-                float x = Math.Abs(Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_SPEED_X));
-                float y = Math.Abs(Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_SPEED_Y));
-                float z = Math.Abs(Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_SPEED_Z));
+                float x = 0;
+                float y = 0;
+                float z = 0;
+                Memory.ReadMemory<float>(IntPtr.Add(vehicle, 0x44), out x);
+                Memory.ReadMemory<float>(IntPtr.Add(vehicle, 0x48), out y);
+                Memory.ReadMemory<float>(IntPtr.Add(vehicle, 0x4C), out z);
+                x = Math.Abs(x);
+                y = Math.Abs(y);
+                z = Math.Abs(z);
 
                 speed = (float)(Math.Pow((Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2)), 0.5) * 1.42 * 100);
             }
@@ -105,48 +135,14 @@ namespace shadowAPI2
         }
 
         /// <summary>
-        /// Get the lock state of the current vehicle
-        /// </summary>
-        /// <returns>Lock state</returns>
-        public bool IsVehicleLocked()
-        {
-            uint vehicle = 0;
-            bool locked = false;
-            if ((vehicle = IsInVehicle()) != 0)
-            {
-                int state = Memory.ReadInteger(vehicle + Memory.OFFSET_VEHICLE_LOCKSTATE);
-                if (state == 2)
-                    locked = true;
-            }
-
-            return locked;
-        }
-
-        /// <summary>
         /// Get the model id of the current vehicle
         /// </summary>
         /// <returns>Id</returns>
-        public int GetModelId()
+        public static bool IsBike()
         {
-            uint vehicle = 0;
-            int id = -1;
-            if ((vehicle = IsInVehicle()) != 0)
-            {
-                id = Memory.ReadInteger16(vehicle + Memory.OFFSET_VEHICLE_MODEL_ID);
-            }
-
-            return id;
-        }
-
-        /// <summary>
-        /// Get the model id of the current vehicle
-        /// </summary>
-        /// <returns>Id</returns>
-        public bool IsBike()
-        {
-            uint vehicle = 0;
+            IntPtr vehicle = IntPtr.Zero;
             bool isBike = false;
-            if ((vehicle = IsInVehicle()) != 0)
+            if ((vehicle = GetVehiclePointer()) != IntPtr.Zero)
             {
                 switch (GetModelId())
                 {
@@ -169,44 +165,34 @@ namespace shadowAPI2
         /// Get the SAMP spawn id of the current vehicle
         /// </summary>
         /// <returns>SAMP spawn id</returns>
-        public int GetSpawnId()
+        /*public int GetSpawnId()
         {
-            uint vehicle = 0;
+            IntPtr vehicle = IntPtr.Zero;
             int id = -1;
-            if ((vehicle = IsInVehicle()) != 0)
+            if ((vehicle = GetVehiclePointer()) != IntPtr.Zero)
             {
                 id = Memory.ReadInteger16(Memory.vehicleId);
             }
 
             return id;
-        }
-
-        internal float GetCollideStatus()
-        {
-            uint vehicle = 0;
-            float collideStatus = -1.0f;
-            if ((vehicle = IsInVehicle()) != 0)
-            {
-                collideStatus = Memory.ReadFloat(vehicle + Memory.OFFSET_VEHICLE_COLLIDE_STATUS);
-            }
-
-            return collideStatus;
-        }
+        }*/
 
         /// <summary>
         /// Get the state of the seats in the current vehicle (seat is used or not)
         /// </summary>
         /// <returns>A bool-Array with the seats\n0 is front left\n 1 is front right\n2 is back left\n3 is back right </returns>
-        public bool[] GetCurrentSeatStates()
+        public static bool[] GetCurrentSeatStates()
         {
-            uint vehicle = 0;
+            IntPtr vehicle = IntPtr.Zero;
             bool[] seatStates = new bool[4];
-            if ((vehicle = IsInVehicle()) != 0)
+            if ((vehicle = GetVehiclePointer()) != IntPtr.Zero)
             {
                 for (int i = 0; i < seatStates.Length; i++)
                 {
-                    if (Memory.ReadInteger(vehicle + (Memory.OFFSET_VEHICLE_DRIVER + (Convert.ToUInt32(i) * 0x4))) != 0)
-                        seatStates[i] = true;
+                    int temp = 0;
+                    if (Memory.ReadMemory<int>(IntPtr.Add(vehicle, (0x460 + (i * 0x4))), out temp))
+                        if (temp != 0)
+                            seatStates[i] = true;
                 }
             }
 
@@ -217,13 +203,14 @@ namespace shadowAPI2
         /// Check if the engine of the current vehicle is enabled
         /// </summary>
         /// <returns>True if it's enabled, false if not</returns>
-        public bool IsEngineEnabled()
+        public static bool IsEngineEnabled()
         {
-            uint vehicle = 0;
+            IntPtr vehicle = IntPtr.Zero;
             bool enabled = false;
-            if ((vehicle = IsInVehicle()) != 0)
+            if ((vehicle = GetVehiclePointer()) != IntPtr.Zero)
             {
-                byte state = Memory.ReadByte(vehicle + Memory.OFFSET_VEHICLE_ENGINESTATE);
+                byte state = 0;
+                Memory.ReadMemory<byte>(IntPtr.Add(vehicle, 0x428), out state);
                 if (state == 24 || state == 56 || state == 88 || state == 120)
                     enabled = true;
             }
@@ -235,11 +222,11 @@ namespace shadowAPI2
         /// Get the vehicle model name of the current vehicle
         /// </summary>
         /// <returns>Model name</returns>
-        public string GetModelName()
+        public static string GetModelName()
         {
-            uint vehicle = 0;
+            IntPtr vehicle = IntPtr.Zero;
             string vehicleMame = "";
-            if ((vehicle = IsInVehicle()) != 0)
+            if ((vehicle = GetVehiclePointer()) != IntPtr.Zero)
             {
                 int modelid = GetModelId();
                 if (modelid > 400 && modelid < 611)
@@ -251,11 +238,11 @@ namespace shadowAPI2
         }
 
         /// <summary>
-        /// Get the 
+        /// Get the model name by id
         /// </summary>
         /// <param name="modelId"></param>
         /// <returns></returns>
-        public string GetModelNameByModelId(int modelId)
+        public static string GetModelNameByModelId(int modelId)
         {
             string vehicleName = "";
             if (modelId > 400 && modelId < 611)

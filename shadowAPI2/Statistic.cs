@@ -6,105 +6,100 @@ using System.Threading.Tasks;
 
 namespace shadowAPI2
 {
-    public class Statistic
-    {
-        private static Statistic instance;
+    //public class Statistic
+    //{
+    //    private static Statistic instance;
 
-        private Statistic()
-        {
+    //    private Statistic()
+    //    {
 
-        }
+    //    }
 
-        public static Statistic GetInstance()
-        {
-            if (instance == null)
-                instance = new Statistic();
+    //    public static Statistic GetInstance()
+    //    {
+    //        if (instance == null)
+    //            instance = new Statistic();
 
-            return instance;
-        }
+    //        return instance;
+    //    }
 
-        /// <summary>
-        /// Get the runned meters
-        /// </summary>
-        /// <returns>Meters</returns>
-        public float GetFeetMeters()
-        {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+    //    /// <summary>
+    //    /// Get the runned meters
+    //    /// </summary>
+    //    /// <returns>Meters</returns>
+    //    public float GetFeetMeters()
+    //    {
+    //        Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.STATÌSTIC_FOOT_METER);
+    //        float result = Memory.ReadFloat(Memory.STATÌSTIC_FOOT_METER);
 
-            return result;
-        }
+    //        return result;
+    //    }
 
-        /// <summary>
-        /// Get the drive meters with normal vehicles
-        /// </summary>
-        /// <returns>Meters</returns>
-        public float GetVehicleMeters()
-        {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+    //    /// <summary>
+    //    /// Get the drive meters with normal vehicles
+    //    /// </summary>
+    //    /// <returns>Meters</returns>
+    //    public float GetVehicleMeters()
+    //    {
+    //        Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.STATÌSTIC_VEHICLE_METER);
+    //        float result = Memory.ReadFloat(Memory.STATÌSTIC_VEHICLE_METER);
 
-            return result;
-        }
+    //        return result;
+    //    }
 
-        /// <summary>
-        /// Get the drive meters with bikes
-        /// </summary>
-        /// <returns>Meters</returns>
-        public float GetBikeMeters()
-        {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+    //    /// <summary>
+    //    /// Get the drive meters with bikes
+    //    /// </summary>
+    //    /// <returns>Meters</returns>
+    //    public float GetBikeMeters()
+    //    {
+    //        if (!Memory.IsInit)
+    //            Memory.Init(Memory._processName);
 
-            float result = Memory.ReadFloat(Memory.STATÌSTIC_BIKE_METER);
+    //        float result = Memory.ReadFloat(Memory.STATÌSTIC_BIKE_METER);
 
-            return result;
-        }
+    //        return result;
+    //    }
 
-        /// <summary>
-        /// Get the flown meters
-        /// </summary>
-        /// <returns>Meters</returns>
-        public float GetHelicopterMeters()
-        {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+    //    /// <summary>
+    //    /// Get the flown meters
+    //    /// </summary>
+    //    /// <returns>Meters</returns>
+    //    public float GetHelicopterMeters()
+    //    {
+    //        Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.STATÌSTIC_HELICOPTER_METER);
+    //        float result = Memory.ReadFloat(Memory.STATÌSTIC_HELICOPTER_METER);
 
-            return result;
-        }
+    //        return result;
+    //    }
 
-        /// <summary>
-        /// Get the drive meters with ships
-        /// </summary>
-        /// <returns>Meters</returns>
-        public float GetShipMeters()
-        {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+    //    /// <summary>
+    //    /// Get the drive meters with ships
+    //    /// </summary>
+    //    /// <returns>Meters</returns>
+    //    public float GetShipMeters()
+    //    {
+    //        Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.STATÌSTIC_SHIP_METER);
+    //        float result = Memory.ReadFloat(Memory.STATÌSTIC_SHIP_METER);
 
-            return result;
-        }
+    //        return result;
+    //    }
 
-        /// <summary>
-        /// Get the swimmed meters
-        /// </summary>
-        /// <returns>Meters</returns>
-        public float GetSwimMeters()
-        {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+    //    /// <summary>
+    //    /// Get the swimmed meters
+    //    /// </summary>
+    //    /// <returns>Meters</returns>
+    //    public float GetSwimMeters()
+    //    {
+    //        Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.STATÌSTIC_SWIM_METER);
+    //        float result = Memory.ReadFloat(Memory.STATÌSTIC_SWIM_METER);
 
-            return result;
-        }
-    }
+    //        return result;
+    //    }
+    //}
 }

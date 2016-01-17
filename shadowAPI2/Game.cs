@@ -7,28 +7,12 @@ namespace shadowAPI2
 {
     public class Game
     {
-        private static Game instance;
-
-        private Game()
+        public static int GetFPS()
         {
+            Memory.Init();
 
-        }
-
-        public static Game GetInstance()
-        {
-            if (instance == null)
-                instance = new Game();
-
-            return instance;
-        }
-
-        public int GetFPS()
-        {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
-
-            int fps = Memory.ReadInteger(Memory.FRAMES_PER_SECOND);
-
+            var fps = 0;
+            Memory.ReadMemory<int>(0xB729A0, out fps);
             return fps;
         }
     }

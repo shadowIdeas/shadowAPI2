@@ -8,15 +8,13 @@ namespace shadowAPI2
 {
     internal class ZoneManager
     {
-        private static ZoneManager instance;
+        private static List<string> cityName;
+        private static List<float[]> cityPosition;
 
-        private List<string> cityName;
-        private List<float[]> cityPosition;
+        private static List<string> zoneName;
+        private static List<float[]> zonePosition;
 
-        private List<string> zoneName;
-        private List<float[]> zonePosition;
-
-        private ZoneManager()
+        public static void Load()
         {
             cityName = new List<string>();
             cityPosition = new List<float[]>();
@@ -414,29 +412,21 @@ namespace shadowAPI2
             AddZone("Los Santos", 44.615f, -2892.970f, -242.990f, 2997.060f, -768.027f, 900.000f);
         }
 
-        internal static ZoneManager GetInstance()
-        {
-            if (instance == null)
-                instance = new ZoneManager();
-
-            return instance;
-        }
-
-        private void AddCity(string name, float aX, float aY, float aZ, float bX, float bY, float bZ)
+        private static void AddCity(string name, float aX, float aY, float aZ, float bX, float bY, float bZ)
         {
             float[] coords = { aX, aY, aZ, bX, bY, bZ };
             cityName.Add(name);
             cityPosition.Add(coords);
         }
 
-        private void AddZone(string name, float aX, float aY, float aZ, float bX, float bY, float bZ)
+        private static void AddZone(string name, float aX, float aY, float aZ, float bX, float bY, float bZ)
         {
             float[] coords = { aX, aY, aZ, bX, bY, bZ };
             zoneName.Add(name);
             zonePosition.Add(coords);
         }
 
-        internal string City(float x, float y, float z)
+        internal static string City(float x, float y, float z)
         {
             string city = "Unknown";
             for (int i = 0; i < cityName.Count; i++)
@@ -453,7 +443,7 @@ namespace shadowAPI2
             return city;
         }
 
-        internal string Zone(float x, float y, float z)
+        internal static string Zone(float x, float y, float z)
         {
             string zone = "Unknown";
             for (int i = 0; i < zoneName.Count; i++)
@@ -470,5 +460,7 @@ namespace shadowAPI2
 
             return zone;
         }
+
     }
+
 }

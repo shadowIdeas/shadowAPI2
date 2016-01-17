@@ -11,16 +11,25 @@ namespace shadowAPI2
 {
     public class Chat
     {
-        private static Chat instance;
-
-        private FileSystemWatcher watcher;
-        private StreamReader reader;
-        private FileInfo info;
+        private static FileSystemWatcher watcher;
+        private static StreamReader reader;
+        private static FileInfo info;
 
         private const string CHATLOG_FILE = "chatlog.txt";
-        private string chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
+        private static string chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GTA San Andreas User Files\\SAMP\\");
 
-        private bool blocked;
+        private static IntPtr chatMessage;
+        private static IntPtr dialog;
+
+        private static IntPtr isChatOpen;
+        private static IntPtr isDialogOpen;
+
+        private static IntPtr functionSendCommand;
+        private static IntPtr functionSendText;
+        private static IntPtr functionAddChatMessage;
+        private static IntPtr functionShowDialog;
+        private static IntPtr functionCloseDialog;
+        private static IntPtr functionSelectDialogListIndex;
 
         /// <summary>
         /// Chat-Message delegate
@@ -32,9 +41,41 @@ namespace shadowAPI2
         /// <summary>
         /// This Event will provide you with the latest chat-messages
         /// </summary>
-        public event OnChatMessageReceived OnChatMessage;
+        public static event OnChatMessageReceived OnChatMessage;
 
-        private Chat()
+        internal static void GenerateAddresses(IntPtr sampBase)
+        {
+            IntPtr temp = IntPtr.Zero;
+            isChatOpen = IntPtr.Zero;
+            isDialogOpen = IntPtr.Zero;
+            chatMessage = IntPtr.Zero;
+
+            while (isChatOpen == IntPtr.Zero || isDialogOpen == IntPtr.Zero || chatMessage == IntPtr.Zero)
+            {
+                System.Threading.Thread.Sleep(250);
+
+                if (Memory.ReadMemory<IntPtr>(sampBase + 0x21A10C, out temp))
+                    if (temp != IntPtr.Zero)
+                        isChatOpen = temp + 0x55;
+
+                if (Memory.ReadMemory<IntPtr>(sampBase + 0x21A0B8, out dialog))
+                    if (dialog != IntPtr.Zero)
+                        isDialogOpen = dialog + 0x28;
+
+                Memory.ReadMemory<IntPtr>(sampBase + 0x21A0E4, out chatMessage);
+            }
+
+            functionSendCommand = sampBase + 0x65C60;
+            functionSendText = sampBase + 0x57F0;
+            functionAddChatMessage = sampBase + 0x64520;
+            functionShowDialog = sampBase + 0x6B9C0;
+            functionCloseDialog = sampBase + 0x6C040;
+            functionSelectDialogListIndex = sampBase + 0x863C0;
+
+            SetupLogging();
+        }
+
+        internal static void SetupLogging()
         {
             try
             {
@@ -48,10 +89,8 @@ namespace shadowAPI2
                 watcher.Filter = CHATLOG_FILE;
                 watcher.Changed += ChangeReceived;
                 watcher.EnableRaisingEvents = true;
-
-                AppDomain.CurrentDomain.DomainUnload += OnUnload;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 chatlogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "GTA San Andreas User Files\\SAMP\\");
                 reader = new StreamReader(new FileStream(Path.Combine(chatlogPath, CHATLOG_FILE), FileMode.Open, FileAccess.Read, FileShare.ReadWrite), Encoding.Default, true);
@@ -64,12 +103,10 @@ namespace shadowAPI2
                 watcher.Filter = CHATLOG_FILE;
                 watcher.Changed += ChangeReceived;
                 watcher.EnableRaisingEvents = true;
-
-                AppDomain.CurrentDomain.DomainUnload += OnUnload;
             }
         }
 
-        internal void ChangeReceived(object ob, FileSystemEventArgs e)
+        private static void ChangeReceived(object ob, FileSystemEventArgs e)
         {
             info.Refresh();
             if (info.Length < reader.BaseStream.Position)
@@ -94,45 +131,39 @@ namespace shadowAPI2
             }
         }
 
-        public void Close()
-        {
-
-        }
-
-        public static Chat GetInstance()
-        {
-            if (instance == null)
-                instance = new Chat();
-
-            return instance;
-        }
 
         /// <summary>
         /// Check if the chat is open
         /// </summary>
         /// <returns>True if its open, else false</returns>
-        public bool IsOpen()
+        public static bool IsOpen()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            bool result = Memory.ReadBoolean(Memory.isChatOpen);
+            byte byteResult = 0;
+            bool result = Memory.ReadMemory<byte>(isChatOpen, out byteResult);
 
-            return result;
+            if (result && byteResult != 0)
+                return true;
+            else
+                return false;
         }
 
         /// <summary>
         /// Check if a dialog is open
         /// </summary>
         /// <returns>True if its open, else false</returns>
-        public bool IsDialogOpen()
+        public static bool IsDialogOpen()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            bool result = Memory.ReadBoolean(Memory.isDialogOpen);
+            byte byteResult = 0;
+            bool result = Memory.ReadMemory<byte>(isDialogOpen, out byteResult);
 
-            return result;
+            if (result && byteResult != 0)
+                return true;
+            else
+                return false;
         }
 
         /// <summary>
@@ -140,19 +171,18 @@ namespace shadowAPI2
         /// </summary>
         /// <param name="message">The message/command</param>
         /// <param name="args">Arguments for a command, e.g an ID</param>
-        public void Send(string message,params object[] args)
+        public static void Send(string message, params object[] args)
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
             if (message.Length != 0)
             {
                 if (args.Length > 0)
                     message += " " + string.Join(" ", args);
                 if (message[0] == '/')
-                    Memory.Call(Memory.functionSendCommand, false, message);
+                    Memory.Call(functionSendCommand, false, message);
                 else
-                    Memory.Call(Memory.functionSendSay, false, message);
+                    Memory.Call(functionSendText, false, message);
             }
         }
 
@@ -161,12 +191,11 @@ namespace shadowAPI2
         /// </summary>
         /// <param name="text">The text to be written</param>
         /// <param name="color">A color in Hex</param>
-        public void AddMessage(string text, string color = "FFFFFF")
+        public static void AddMessage(string text, string color = "FFFFFF")
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + color + "}" + text);
+            Memory.Call(functionAddChatMessage, true, (int)chatMessage, "{" + color + "}" + text);
         }
 
         /// <summary>
@@ -174,12 +203,11 @@ namespace shadowAPI2
         /// </summary>
         /// <param name="text">The text to be written</param>
         /// <param name="color">A Color-Type</param>
-        public void AddMessage(string text, Color color)
+        public static void AddMessage(string text, Color color)
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(color) + "}" + text);
+            Memory.Call(functionAddChatMessage, true, (int)chatMessage, "{" + Util.ColorToHexRGB(color) + "}" + text);
         }
 
         /// <summary>
@@ -189,12 +217,11 @@ namespace shadowAPI2
         /// <param name="prefixColor">A prefix color in Hex</param>
         /// <param name="text">The text to be written</param>
         /// <param name="color">A color in Hex</param>
-        public void AddMessage(string prefix, string prefixColor, string text, string color = "FFFFFF")
+        public static void AddMessage(string prefix, string prefixColor, string text, string color = "FFFFFF")
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + prefixColor + "}" + prefix + " {" + color + "}" + text);
+            Memory.Call(functionAddChatMessage, true, (int)chatMessage, "{" + prefixColor + "}" + prefix + " {" + color + "}" + text);
         }
 
         /// <summary>
@@ -204,44 +231,115 @@ namespace shadowAPI2
         /// <param name="prefixColor">A Color-Type</param>
         /// <param name="text">The text to be written</param>
         /// <param name="color">A Color-Type</param>
-        public void AddMessage(string prefix, Color prefixColor, string text, Color color)
+        public static void AddMessage(string prefix, Color prefixColor, string text, Color color)
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            Memory.Call(Memory.functionAddChatMessage, true, (int)Memory.chatMessage, "{" + Util.ColorToHexRGB(prefixColor) + "}" + prefix + " {" + Util.ColorToHexRGB(color) + "}" + text);
+            Memory.Call(functionAddChatMessage, true, (int)chatMessage, "{" + Util.ColorToHexRGB(prefixColor) + "}" + prefix + " {" + Util.ColorToHexRGB(color) + "}" + text);
         }
 
 
-        public void ShowDialog(DialogStyle style, string caption, string text, string button = "", string button2 = "")
+        public static void ShowDialog(DialogStyle style, string caption, string text, string button = "", string button2 = "")
         {
+            Memory.Init();
+
             List<byte> ptr = new List<byte>();
             ptr.Add(0xB9);
-            ptr.AddRange(BitConverter.GetBytes((uint)Memory.dialog));
-            Memory.Call(Memory.functionShowDialog, ptr.ToArray(), false, 1, (int)style, caption, text, button, button2, 0);
+            ptr.AddRange(BitConverter.GetBytes((uint)dialog));
+            Memory.Call(functionShowDialog, ptr.ToArray(), false, 1, (int)style, caption, text, button, button2, 0);
         }
 
-        // UNDONE
-        public void BlockChatInput()
+        public static void SelectDialogListIndex(uint index)
         {
-            blocked = !blocked;
-            
-            if(blocked)
-            {
+            Memory.Init();
 
-            }
-            else
+            // Check if id == 2
+            int id = 0;
+            if (Memory.ReadMemory<int>(dialog + 0x2C, out id) && id == 2)
             {
+                // Set the entry id to entryId
+                int something = 0;
+                if (Memory.ReadMemory<int>(dialog + 0x20, out something))
+                {
+                    List<byte> ptr = new List<byte>();
+                    ptr.Add(0xB9);
+                    ptr.AddRange(BitConverter.GetBytes(something));
 
+                    Memory.Call(functionSelectDialogListIndex, ptr.ToArray(), false, index);
+                }
             }
         }
 
-        void OnUnload(object sender, EventArgs e)
+        public static string GetSelectedDialogListString()
         {
-            if(blocked)
-            {
+            Memory.Init();
 
+            int id = 0;
+            var listString = "";
+            if (Memory.ReadMemory<int>(dialog + 0x2C, out id) && id == 2)
+            {
+                IntPtr temp = IntPtr.Zero;
+                if (Memory.ReadMemory<IntPtr>(IntPtr.Add(dialog, 0x20), out temp))
+                {
+                    var index = 0;
+                    Memory.ReadMemory<int>(IntPtr.Add(temp, 0x143), out index);
+
+                    if (Memory.ReadMemory<IntPtr>(IntPtr.Add(temp, 0x14C), out temp))
+                    {
+                        if (Memory.ReadMemory<IntPtr>(IntPtr.Add(temp, (int)(4 * index)), out temp))
+                        {
+                            listString = Memory.ReadString(temp, 64);
+                        }
+                    }
+                }
             }
+
+            return listString;
+        }
+
+        public static string GetSelectedDialogListStringByIndex(uint index)
+        {
+            Memory.Init();
+
+            int id = 0;
+            var listString = "";
+            if (Memory.ReadMemory<int>(dialog + 0x2C, out id) && id == 2)
+            {
+                IntPtr temp = IntPtr.Zero;
+                if (Memory.ReadMemory<IntPtr>(IntPtr.Add(dialog, 0x20), out temp))
+                {
+                    if (Memory.ReadMemory<IntPtr>(IntPtr.Add(temp, 0x14C), out temp))
+                    {
+                        if (Memory.ReadMemory<IntPtr>(IntPtr.Add(temp, (int)(4 * index)), out temp))
+                        {
+                            listString = Memory.ReadString(temp, 64);
+                        }
+                    }
+                }
+            }
+
+            return listString;
+        }
+
+        public static void CloseDialog()
+        {
+            Memory.Init();
+
+            List<byte> ptr = new List<byte>();
+            ptr.Add(0xB9);
+            ptr.AddRange(BitConverter.GetBytes((uint)dialog));
+
+            Memory.Call(functionCloseDialog, ptr.ToArray(), false, 1);
+        }
+
+        public static uint GetCurrentDialogId()
+        {
+            Memory.Init();
+
+            int result = 0;
+            Memory.ReadMemory<int>(dialog + 0x30, out result);
+
+            return (uint)result;
         }
     }
 }

@@ -8,157 +8,256 @@ namespace shadowAPI2
 {
     public class Player
     {
-        private static Player instance;
+        private static IntPtr playerName;
+        private static IntPtr structSAMP;
+        private static IntPtr structSAMPPools;
+        private static IntPtr poolPlayers;
+        private static IntPtr playerId;
 
-        private ZoneManager zoneManager;
-
-        private Player()
+        internal static void GenerateAddresses(IntPtr sampBase)
         {
-            zoneManager = ZoneManager.GetInstance();
+            playerName = IntPtr.Add(sampBase, 0x219A6F);
+            Memory.ReadMemory<IntPtr>(IntPtr.Add(sampBase, 0x21A0F8), out structSAMP);
+            Memory.ReadMemory<IntPtr>(IntPtr.Add(structSAMP, 0x3CD), out structSAMPPools);
+            Memory.ReadMemory<IntPtr>(IntPtr.Add(structSAMPPools, 0x18), out poolPlayers);
+            playerId = IntPtr.Add(poolPlayers, 0x04);
         }
 
-        public static Player GetInstance()
+        private static IntPtr GetPlayerPointer()
         {
-            if (instance == null)
-                instance = new Player();
+            Memory.Init();
 
-            return instance;
+            IntPtr pointer = IntPtr.Zero;
+            Memory.ReadMemory<IntPtr>(0xB6F5F0, out pointer);
+            return pointer;
         }
 
         /// <summary>
         /// Get the current health of the player
         /// </summary>
         /// <returns>Health</returns>
-        public int GetHealth()
+        public static int GetHealth()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            int result = (int)Memory.ReadFloat(Memory.playerHealth);
+            float health = -1;
 
-            return result;
+            IntPtr pointer = GetPlayerPointer();
+            if (pointer != IntPtr.Zero)
+                Memory.ReadMemory<float>(pointer + 0x540, out health);
+
+            return (int)health;
         }
 
         /// <summary>
         /// Get the current armor of the player
         /// </summary>
         /// <returns>Armor</returns>
-        public int GetArmor()
+        public static int GetArmor()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            int result = (int)Memory.ReadFloat(Memory.playerArmor);
+            float armor = -1;
 
-            return result;
+            IntPtr pointer = GetPlayerPointer();
+            if (pointer != IntPtr.Zero)
+                Memory.ReadMemory<float>(pointer + 0x548, out armor);
+
+            return (int)armor;
+        }
+
+        public static bool GetPosition(ref float x, ref float y, ref float z)
+        {
+            Memory.Init();
+
+            x = 0.0f;
+            y = 0.0f;
+            z = 0.0f;
+
+            IntPtr pointer = GetPlayerPointer();
+            if (pointer != IntPtr.Zero)
+            {
+                IntPtr matrix = IntPtr.Zero;
+                if (Memory.ReadMemory<IntPtr>(pointer + 0x14, out matrix))
+                {
+                    if (matrix != IntPtr.Zero)
+                    {
+                        if (Memory.ReadMemory<float>(matrix + 0x30, out x) && Memory.ReadMemory<float>(matrix + 0x34, out y) && Memory.ReadMemory<float>(matrix + 0x38, out z))
+                            return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Get the current X-Coordinate of the player
         /// </summary>
         /// <returns>X-Coordinate</returns>
-        public float GetX()
+        public static bool GetX(ref float x)
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.playerPositionX);
+            x = 0.0f;
 
-            return result;
+            IntPtr pointer = GetPlayerPointer();
+            if (pointer != IntPtr.Zero)
+            {
+                IntPtr matrix = IntPtr.Zero;
+                if (Memory.ReadMemory<IntPtr>(pointer + 0x14, out matrix))
+                {
+                    if (matrix != IntPtr.Zero)
+                    {
+                        if (Memory.ReadMemory<float>(matrix + 0x30, out x))
+                            return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Get the current X-Coordinate of the player
         /// </summary>
         /// <returns>X-Coordinate</returns>
-        public float GetY()
+        public static bool GetY(ref float y)
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.playerPositionY);
+            y = 0.0f;
 
-            return result;
-        }
+            IntPtr pointer = GetPlayerPointer();
+            if (pointer != IntPtr.Zero)
+            {
+                IntPtr matrix = IntPtr.Zero;
+                if (Memory.ReadMemory<IntPtr>(pointer + 0x14, out matrix))
+                {
+                    if (matrix != IntPtr.Zero)
+                    {
+                        if (Memory.ReadMemory<float>(matrix + 0x34, out y))
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+        }   
 
         /// <summary>
         /// Get the current X-Coordinate of the player
         /// </summary>
         /// <returns>X-Coordinate</returns>
-        public float GetZ()
+        public static bool GetZ(ref float z)
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            float result = Memory.ReadFloat(Memory.playerPositionZ);
+            z = 0.0f;
 
-            return result;
+            IntPtr pointer = GetPlayerPointer();
+            if (pointer != IntPtr.Zero)
+            {
+                IntPtr matrix = IntPtr.Zero;
+                if (Memory.ReadMemory<IntPtr>(pointer + 0x14, out matrix))
+                {
+                    if (matrix != IntPtr.Zero)
+                    {
+                        if (Memory.ReadMemory<float>(matrix + 0x38, out z))
+                            return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Get the current city of the player
         /// </summary>
         /// <returns>City</returns>
-        public string GetCity()
+        public static string GetCity()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            float x = Memory.ReadFloat(Memory.playerPositionX);
-            float y = Memory.ReadFloat(Memory.playerPositionY);
-            float z = Memory.ReadFloat(Memory.playerPositionZ);
+            var x = 0.0f;
+            var y = 0.0f;
+            var z = 0.0f;
 
-            return zoneManager.City(x, y, z);
+            GetPosition(ref x, ref y, ref z);
+
+            return ZoneManager.City(x, y, z);
         }
 
         /// <summary>
         /// Get the current zone of the player
         /// </summary>
         /// <returns>Zone</returns>
-        public string GetZone()
+        public static string GetZone()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            float x = Memory.ReadFloat(Memory.playerPositionX);
-            float y = Memory.ReadFloat(Memory.playerPositionY);
-            float z = Memory.ReadFloat(Memory.playerPositionZ);
+            var x = 0.0f;
+            var y = 0.0f;
+            var z = 0.0f;
 
-            return zoneManager.Zone(x, y, z);
+            GetPosition(ref x, ref y, ref z);
+
+            return ZoneManager.Zone(x, y, z);
         }
 
         /// <summary>
         /// Check if's the player is in a interior
         /// </summary>
         /// <returns>True if it in a interior, false if not</returns>
-        public bool IsInInterior()
+        public static bool InInterior()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            int result = Memory.ReadInteger(Memory.playerLocation);
+            byte interior = 0;
 
-            if (result == 0)
-                return false;
-            else
-                return true;
+            IntPtr pointer = GetPlayerPointer();
+            if (pointer != IntPtr.Zero)
+                Memory.ReadMemory<byte>(pointer + 0x2F, out interior);
+
+            return interior != 0 ? true : false;
         }
 
         /// <summary>
         /// Check if's the player is in a vehicle
         /// </summary>
         /// <returns>True if it in a vehicle, false if not</returns>
-        public bool IsInVehicle()
+        public static bool InVehicle()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            bool inVehicle = false;
+            var returned = false;
+            if (Vehicle.GetVehiclePointer() != IntPtr.Zero)
+                returned = true;
+            return returned;
+        }
 
-            if (Vehicle.GetInstance().IsInVehicle() != 0)
-                inVehicle = true;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x">The X-Coordinate where check the range</param>
+        /// <param name="y">The Y-Coordinate where check the range</param>
+        /// <param name="radius">The radius of the point</param>
+        /// <returns></returns>
+        public static bool InRange2D(float x, float y, float z, float radius)
+        {
+            var currentX = 0.0f;
+            var currentY = 0.0f;
+            GetX(ref currentX);
+            GetY(ref currentY);
 
-            return inVehicle;
+            x = currentX - x;
+            y = currentY - y;
+
+            if ((x < radius) && (x > -radius) && (y < radius) && (y > -radius) && (z < radius) && (z > -radius))
+                return true;
+            else
+                return false;
         }
 
         /// <summary>
@@ -169,11 +268,17 @@ namespace shadowAPI2
         /// <param name="z">The Z-Coordinate where check the range</param>
         /// <param name="radius">The radius of the point</param>
         /// <returns></returns>
-        public bool IsInRangeOf(float x, float y, float z, float radius)
+        public static bool InRange3D(float x, float y, float z, float radius)
         {
-            x = GetX() - x;
-            y = GetY() - y;
-            z = GetZ() - z;
+            var currentX = 0.0f;
+            var currentY = 0.0f;
+            var currentZ = 0.0f;
+
+            GetPosition(ref currentX, ref currentY, ref currentZ);
+
+            x = currentX - x;
+            y = currentY - y;
+            z = currentZ - z;
 
             if ((x < radius) && (x > -radius) && (y < radius) && (y > -radius) && (z < radius) && (z > -radius))
                 return true;
@@ -182,17 +287,15 @@ namespace shadowAPI2
         }
 
         /// <summary>
-        /// Get the SAMP id of the player
+        /// Get the SAMP id of the player (Not functional)
         /// </summary>
         /// <returns>SAMP id</returns>
-        public int GetId()
+        public static int GetId()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            int id = -1;
-
-            id = Memory.ReadInteger16(Memory.playerId);
+            Int16 id = -1;
+            Memory.ReadMemory<Int16>(playerId, out id);
 
             return id;
         }
@@ -201,15 +304,11 @@ namespace shadowAPI2
         /// Get the current SAMP name of the player
         /// </summary>
         /// <returns>SAMP name</returns>
-        public string GetName()
+        public static string GetName()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            string name = "";
-
-            name = Memory.ReadString(Memory.playerName, 25).Replace("\0", "");
-
+            var name = Memory.ReadString(playerName, 32);
             return name;
         }
 
@@ -217,24 +316,28 @@ namespace shadowAPI2
         /// Get the current GTA Money what the players has on the hand.
         /// </summary>
         /// <returns>GTA Money</returns>
-        public int GetMoney()
+        public static int GetMoney()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            return Memory.ReadInteger16(Memory.PLAYER_MONEY);
+            Int16 returned = 0;
+            Memory.ReadMemory<Int16>(0xB7CE50, out returned);
+
+            return (int)returned;
         }
 
         /// <summary>
         /// Get the weapon ID of the gun the player is holding
         /// </summary>
         /// <returns>GTA Weapon ID</returns>
-        public int GetWeaponId()
+        public static int GetWeaponId()
         {
-            if (!Memory.IsInit)
-                Memory.Init(Memory._processName);
+            Memory.Init();
 
-            return Memory.ReadInteger16(Memory.PLAYER_WEAPON);
+            Int16 returned = 0;
+            Memory.ReadMemory<Int16>(0x0BAA410, out returned);
+
+            return (int)returned;
         }
     }
 }

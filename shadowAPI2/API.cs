@@ -12,32 +12,9 @@ namespace shadowAPI2
         /// <summary>
         /// Initialize manually the API (only need the first time)
         /// </summary>
-        public static bool TryInit(string processName = "rgn_ac_gta")
-        {
-            return Memory.Init(processName);
-        }
-
-        public static bool TryInit(Process process)
-        {
-            return Memory.Init(process);
-        }
-
-        public static void Init(string processName = "rgn_ac_gta")
-        {
-            Memory.Init(processName);
-        }
-
         public static void Init(Process process)
         {
-            Memory.Init(process);
-        }
-
-        /// <summary>
-        /// Uninitialize manually the API 
-        /// </summary>
-        public static void UnInit()
-        {
-            Memory.UnInit();
+            Memory.Init();
         }
     }
 }
